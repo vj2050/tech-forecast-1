@@ -19,11 +19,20 @@
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="collapseExample" [ngbCollapse]="isCollapsed">
       <form>
-        <div class="input-group no-border">
-          <input type="text" value="" class="form-control" placeholder="Search...">
-          <div class="input-group-append">
+        <div class="input-group">
+<!--          <input type="text" value="" class="form-control" placeholder="Search...">-->
+          <ng-select [items]="categories"
+                     bindLabel="name"
+                     appendTo="body"
+                     [multiple]="true"
+                     [(ngModel)]="selected"
+                     class="form-control"
+                     name="test"
+          >
+          </ng-select>
+          <div class="input-group-append" (click)="getSelectedValue()">
             <div class="input-group-text">
-              <i class="nc-icon nc-zoom-split"></i>
+              <i class="nc-icon nc-zoom-split" ></i>
             </div>
           </div>
         </div>
