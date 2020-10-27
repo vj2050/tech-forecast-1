@@ -3,12 +3,12 @@ import Chart from 'chart.js';
 
 
 @Component({
-    selector: 'app-dashboard-cmp',
+    selector: 'trend-cmp',
     moduleId: module.id,
-    templateUrl: 'dashboard.component.html'
+    templateUrl: 'trend.component.html'
 })
 
-export class DashboardComponent implements OnInit{
+export class TrendComponent implements OnInit{
 
   public canvas : any;
   public ctx;

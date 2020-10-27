@@ -10,6 +10,9 @@ import { TableComponent }           from '../../pages/table/table.component';
 import { UpgradeComponent }         from '../../pages/upgrade/upgrade.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {TrendComponent} from '../../pages/trend/trend.component';
+import {PredictionTrendComponent} from '../../pages/predictiontrend/predictiontrend.component';
+import {ComparisonComponent} from '../../pages/comparison/comparison.component';
 
 @NgModule({
   imports: [
@@ -20,6 +23,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   ],
   declarations: [
     DashboardComponent,
+    TrendComponent,
+    PredictionTrendComponent,
+    ComparisonComponent,
     UserComponent,
     TableComponent,
     UpgradeComponent

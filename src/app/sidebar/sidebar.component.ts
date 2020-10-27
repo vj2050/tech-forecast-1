@@ -9,17 +9,15 @@ export interface RouteInfo {
 }
 
 export const ROUTES: RouteInfo[] = [
-    { path: '/dashboard',     title: 'Dashboard',         icon:'nc-bank',       class: '' },
-    
-    { path: '/user',          title: 'User Profile',      icon:'nc-single-02',  class: '' },
-    { path: '/table',         title: 'Table List',        icon:'nc-tile-56',    class: '' },
-    
-    { path: '/upgrade',       title: 'Upgrade to PRO',    icon:'nc-spaceship',  class: 'active-pro' },
+    { path: '/dashboard',     title: 'Dashboard',         icon: 'nc-bank',       class: '' },
+    { path: '/trend',     title: 'Current Trend',         icon: 'nc-chart-bar-32',       class: '' },
+    { path: '/prediction-trend',     title: 'Demand Forecast',         icon: 'nc-atom',       class: '' },
+    { path: '/comparison',     title: 'Comparison',         icon: 'nc-chart-pie-36',       class: '' },
 ];
 
 @Component({
     moduleId: module.id,
-    selector: 'sidebar-cmp',
+    selector: 'app-sidebar-cmp',
     templateUrl: 'sidebar.component.html',
 })
 

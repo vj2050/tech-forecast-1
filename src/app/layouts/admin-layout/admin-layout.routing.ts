@@ -1,14 +1,17 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 
-import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
-import { UserComponent } from '../../pages/user/user.component';
-import { TableComponent } from '../../pages/table/table.component';
-import { UpgradeComponent } from '../../pages/upgrade/upgrade.component';
+import {DashboardComponent} from '../../pages/dashboard/dashboard.component';
+import {TrendComponent} from '../../pages/trend/trend.component';
+import {PredictionTrendComponent} from '../../pages/predictiontrend/predictiontrend.component';
+import {ComparisonComponent} from '../../pages/comparison/comparison.component';
 
 export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',      component: DashboardComponent },
-    { path: 'user',           component: UserComponent },
-    { path: 'table',          component: TableComponent },
-
-    { path: 'upgrade',        component: UpgradeComponent }
+    { path: 'trend',      component: TrendComponent },
+    { path: 'prediction-trend',      component: PredictionTrendComponent },
+    { path: 'comparison',      component: ComparisonComponent },
+    // { path: 'user',           component: UserComponent },
+    // { path: 'table',          component: TableComponent },
+    //
+    // { path: 'upgrade',        component: UpgradeComponent }
 ];
