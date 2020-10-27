@@ -44,7 +44,7 @@ export class PredictionTrendComponent implements OnInit {
       };
 
       let speedData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: ['2010', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'],
         datasets: [dataFirst, dataSecond]
       };
 
