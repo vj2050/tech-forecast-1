@@ -2,7 +2,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <div>
-<div class="row">
+<div class="row justify-content-md-center m-5">
   <form>
     <div class="input-group">
       <!--          <input type="text" value="" class="form-control" placeholder="Search...">-->
@@ -13,6 +13,7 @@
                  [(ngModel)]="selected"
                  class="form-control"
                  name="test"
+                 style="width: 400px"
       >
       </ng-select>
       <div class="input-group-append" (click)="getSelectedValue()">

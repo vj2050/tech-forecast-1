@@ -28,9 +28,7 @@ export class TrendComponent implements OnInit{
     {id: 8, name: 'Javascript'},
   ];
 
-  selected = [
-    {id: 5, name: 'Python'},
-  ];
+  selected = {id: 5, name: 'Python'};
 
   getSelectedValue(){
     console.log(this.selected);
