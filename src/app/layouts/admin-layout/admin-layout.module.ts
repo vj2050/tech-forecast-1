@@ -13,13 +13,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {TrendComponent} from '../../pages/trend/trend.component';
 import {PredictionTrendComponent} from '../../pages/predictiontrend/predictiontrend.component';
 import {ComparisonComponent} from '../../pages/comparison/comparison.component';
+import {NgSelectModule} from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
-    NgbModule
+    NgbModule,
+    NgSelectModule
   ],
   declarations: [
     DashboardComponent,

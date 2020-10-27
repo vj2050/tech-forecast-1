@@ -3,6 +3,28 @@
 </head>
 <div>
   <div class="row">
+    <form>
+      <div class="input-group">
+        <!--          <input type="text" value="" class="form-control" placeholder="Search...">-->
+        <ng-select [items]="categories"
+                   bindLabel="name"
+                   appendTo="body"
+                   placeholder="Search here ..."
+                   [multiple]="true"
+                   [(ngModel)]="selected"
+                   class="form-control"
+                   name="test"
+        >
+        </ng-select>
+        <div class="input-group-append" (click)="getSelectedValue()">
+          <div class="input-group-text">
+            <i class="nc-icon nc-zoom-split" ></i>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
 
     <div class="card card-chart">
       <div class="card-header">

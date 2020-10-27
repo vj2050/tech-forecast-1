@@ -2,6 +2,27 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <div>
+<div class="row">
+  <form>
+    <div class="input-group">
+      <!--          <input type="text" value="" class="form-control" placeholder="Search...">-->
+      <ng-select [items]="categories"
+                 bindLabel="name"
+                 appendTo="body"
+                 placeholder="Search here ..."
+                 [(ngModel)]="selected"
+                 class="form-control"
+                 name="test"
+      >
+      </ng-select>
+      <div class="input-group-append" (click)="getSelectedValue()">
+        <div class="input-group-text">
+          <i class="nc-icon nc-zoom-split" ></i>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
   <div class="row">
     <div class="col-md-12">
       <div class="card ">

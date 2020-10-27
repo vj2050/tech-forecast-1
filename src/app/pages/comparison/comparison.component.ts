@@ -16,6 +16,28 @@ export class ComparisonComponent implements OnInit{
   public chartEmail;
   public chartHours;
 
+  private sidebarVisible: boolean;
+  categories = [
+    {id: 1, name: 'Laravel'},
+    {id: 2, name: 'Codeigniter'},
+    {id: 3, name: 'React'},
+    {id: 4, name: 'PHP'},
+    {id: 5, name: 'Tornado'},
+    {id: 6, name: 'Bottle'},
+    {id: 7, name: 'Flask'},
+    {id: 8, name: 'Django'},
+  ];
+
+  selected = [
+    {id: 5, name: 'Tornado'},
+    {id: 6, name: 'Bottle'},
+    {id: 7, name: 'Flask'},
+    {id: 8, name: 'Django'},
+  ];
+
+  getSelectedValue(){
+    console.log(this.selected);
+  }
     ngOnInit(){
       this.chartColor = "#FFFFFF";
 
