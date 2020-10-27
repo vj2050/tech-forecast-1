@@ -6,6 +6,7 @@ import Chart from 'chart.js';
     selector: 'app-dashboard-cmp',
     moduleId: module.id,
     templateUrl: 'dashboard.component.html'
+    
 })
 
 export class DashboardComponent implements OnInit {
