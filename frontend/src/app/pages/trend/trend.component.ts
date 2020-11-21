@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import Chart from 'chart.js';
+import {environment} from '../../../environments/environment';
+import {HttpClient} from '@angular/common/http';
 
 
 @Component({
-    selector: 'trend-cmp',
-    moduleId: module.id,
-    templateUrl: 'trend.component.html'
+  selector: 'trend-cmp',
+  moduleId: module.id,
+  templateUrl: 'trend.component.html'
 })
 
-export class TrendComponent implements OnInit{
+export class TrendComponent implements OnInit {
 
-  public canvas : any;
+  public canvas: any;
   public ctx;
   public chartColor;
   public chartEmail;
   public chartHours;
-
-  private sidebarVisible: boolean;
   categories = [
     {id: 1, name: 'Laravel'},
     {id: 2, name: 'Codeigniter'},
@@ -29,74 +29,94 @@ export class TrendComponent implements OnInit{
   ];
 
   selected = {id: 5, name: 'Python'};
+  private responseData: String;
+  private labels: string[];
+  private data: number[];
 
-  getSelectedValue(){
+  constructor(
+    private http: HttpClient
+  ) {
+  }
+
+  getSelectedValue() {
     console.log(this.selected);
   }
-    ngOnInit(){
-      this.chartColor = "#FFFFFF";
 
-      this.canvas = document.getElementById("chartHours");
-      this.ctx = this.canvas.getContext("2d");
-
-      this.chartHours = new Chart(this.ctx, {
-        type: 'line',
-
-        data: {
-          labels: ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"],
-          datasets: [{
-              borderColor: "#6bd098",
-              backgroundColor: "#6bd098",
-              pointRadius: 0,
-              pointHoverRadius: 0,
-              borderWidth: 3,
-              data: [300, 310, 316, 322, 330, 326, 333, 345, 338, 354]
-            }
-          ]
-        },
-        options: {
-          legend: {
-            display: false
-          },
-
-          tooltips: {
-            enabled: false
-          },
-
-          scales: {
-            yAxes: [{
-
-              ticks: {
-                fontColor: "#9f9f9f",
-                beginAtZero: false,
-                maxTicksLimit: 5,
-                //padding: 20
-              },
-              gridLines: {
-                drawBorder: false,
-                zeroLineColor: "#ccc",
-                color: 'rgba(255,255,255,0.05)'
-              }
-
-            }],
-
-            xAxes: [{
-              barPercentage: 1.6,
-              gridLines: {
-                drawBorder: false,
-                color: 'rgba(255,255,255,0.1)',
-                zeroLineColor: "transparent",
-                display: false,
-              },
-              ticks: {
-                padding: 20,
-                fontColor: "#9f9f9f"
-              }
-            }]
-          },
-        }
-      });
-
-
+  ngOnInit() {
+    const tagsArr = {
+      tags: this.selected.name
     }
+    const response = this.http.get<String>(`${environment.apiUrl}/current/trend/`, {params: tagsArr});
+    response.toPromise().then(value => {
+      this.responseData = value
+      this.labels =  Object.keys(this.responseData)
+      this.data = []
+      this.labels.forEach(key => {
+        this.data.push(this.responseData[key].posts)
+      })
+    this.chartColor = '#FFFFFF';
+
+    this.canvas = document.getElementById('chartHours');
+    this.ctx = this.canvas.getContext('2d');
+
+    this.chartHours = new Chart(this.ctx, {
+      type: 'line',
+
+      data: {
+        labels: this.labels,
+        datasets: [{
+          borderColor: '#6bd098',
+          backgroundColor: '#6bd098',
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          borderWidth: 3,
+          data: this.data
+        }
+        ]
+      },
+      options: {
+        legend: {
+          display: false
+        },
+
+        tooltips: {
+          enabled: false
+        },
+
+        scales: {
+          yAxes: [{
+
+            ticks: {
+              fontColor: '#9f9f9f',
+              beginAtZero: false,
+              maxTicksLimit: 5,
+              // padding: 20
+            },
+            gridLines: {
+              drawBorder: false,
+              zeroLineColor: '#ccc',
+              color: 'rgba(255,255,255,0.05)'
+            }
+
+          }],
+
+          xAxes: [{
+            barPercentage: 1.6,
+            gridLines: {
+              drawBorder: false,
+              color: 'rgba(255,255,255,0.1)',
+              zeroLineColor: 'transparent',
+              display: false,
+            },
+            ticks: {
+              padding: 20,
+              fontColor: '#9f9f9f'
+            }
+          }]
+        },
+      }
+    });
+
+    });
+  }
 }
