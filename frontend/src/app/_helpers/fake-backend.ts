@@ -16,6 +16,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     function currentTrend() {
       const tags = request.params.getAll('tags')
+      console.log(tags)
       return ok({
         '2009': {'posts': 0.1674608107},
         '2010': {'posts': 0.0575115315},
@@ -32,6 +33,18 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       })
     }
 
+    function getTags() {
+      return ok(['Laravel'
+        , 'Codeigniter'
+        , 'React'
+        , 'PHP'
+        , 'Python'
+        , 'Vue'
+        , 'JQuery'
+        , 'Javascript']
+      );
+    }
+
     function handleRoute() {
       switch (true) {
         case url.endsWith('/users/authenticate') && method === 'POST':
@@ -46,6 +59,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
           return updateUser();
         case url.match(/\/users\/\d+$/) && method === 'DELETE':
           return deleteUser();
+        case url.endsWith('/tags'):
+          return getTags();
         case url.includes('/current/trend'):
           return currentTrend();
         default:
