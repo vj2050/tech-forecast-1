@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import Chart from 'chart.js';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {publish} from 'rxjs/operators';
 
 @Component({
   selector: 'trend-cmp',
@@ -15,7 +14,6 @@ export class TrendComponent implements OnInit {
   public canvas: any;
   public ctx;
   public chartColor;
-  public chartEmail;
   public chartHours;
 
 
@@ -36,7 +34,7 @@ export class TrendComponent implements OnInit {
     const tagsArr = {
       tags: this.selected.name
     }
-    const response = this.http.get<String>(`${environment.apiUrl}/current/trend/`, {params: tagsArr});
+    const response = this.http.get<string>(`${environment.apiUrl}/current/trend/`, {params: tagsArr});
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
@@ -115,8 +113,7 @@ export class TrendComponent implements OnInit {
     response.toPromise().then(value => {
       this.categories = []
       value.forEach(value1 => {
-        // tslint:disable-next-line:prefer-const
-        let abc: any = {
+        const abc: any = {
           name : value1,
           disabled : false,
         };
