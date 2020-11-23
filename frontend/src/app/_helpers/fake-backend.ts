@@ -45,6 +45,25 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       );
     }
 
+    function prediction() {
+      const tags = request.params.getAll('tags')
+      console.log(tags)
+      return ok({
+        '2009': {'posts_x': 0.1225744078, 'posts_y': 0.108763207, 'posts': 0.1674608107},
+        '2010': {'posts_x': 0.0934197466, 'posts_y': 0.0423308227, 'posts': 0.0575115315},
+        '2011': {'posts_x': 0.153566558, 'posts_y': 0.0361163119, 'posts': 0.0606754039},
+        '2012': {'posts_x': 0.228142238, 'posts_y': 0.0178589845, 'posts': 0.0700105729},
+        '2013': {'posts_x': 0.3027190857, 'posts_y': 0.014689159, 'posts': 0.089297846},
+        '2014': {'posts_x': 0.3082495976, 'posts_y': 0.0770990434, 'posts': 0.1011863872},
+        '2015': {'posts_x': 0.3506208097, 'posts_y': 0.3412839281, 'posts': 0.1319705512},
+        '2016': {'posts_x': 0.3133698108, 'posts_y': 0.616090033, 'posts': 0.1590640688},
+        '2017': {'posts_x': 0.2613612964, 'posts_y': 0.6685418303, 'posts': 0.1719779959},
+        '2018': {'posts_x': 0.1770700829, 'posts_y': 0.6801485808, 'posts': 0.1598052794},
+        '2019': {'posts_x': 0.1269002858, 'posts_y': 0.7168421113, 'posts': 0.1525956232},
+        '2020': {'posts_x': 0.1003826625, 'posts_y': 0.6146450567, 'posts': 0.1224838084}
+      });
+    }
+
     function handleRoute() {
       switch (true) {
         case url.endsWith('/users/authenticate') && method === 'POST':
@@ -63,6 +82,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
           return getTags();
         case url.includes('/current/trend'):
           return currentTrend();
+        case url.includes('/prediction'):
+          return prediction();
         default:
           // pass through any requests not handled above
           return next.handle(request);

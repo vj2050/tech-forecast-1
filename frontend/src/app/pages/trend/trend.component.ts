@@ -21,7 +21,7 @@ export class TrendComponent implements OnInit {
   private responseData: String;
   private labels: string[];
   private data: number[];
-  categories: any ;
+  categories: any;
   selected: any;
 
   constructor(
@@ -30,17 +30,20 @@ export class TrendComponent implements OnInit {
   }
 
   getSelectedValue() {
-    console.log(this.selected);
-    const tagsArr = {
+    const params = {
       tags: this.selected.name
     }
-    const response = this.http.get<string>(`${environment.apiUrl}/current/trend/`, {params: tagsArr});
+
+    /*Fix for JSON*/
+    const a = 'posts'
+
+    const response = this.http.get<string>(`${environment.apiUrl}/current/trend/`, {params: params});
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
       this.data = []
       this.labels.forEach(key => {
-        this.data.push(this.responseData[key].posts)
+        this.data.push(this.responseData[key][a])
       })
       this.chartColor = '#FFFFFF';
 
@@ -114,12 +117,11 @@ export class TrendComponent implements OnInit {
       this.categories = []
       value.forEach(value1 => {
         const abc: any = {
-          name : value1,
-          disabled : false,
+          name: value1,
+          disabled: false,
         };
         this.categories.push(abc)
       })
-      console.log(this.categories)
     })
   }
 }
