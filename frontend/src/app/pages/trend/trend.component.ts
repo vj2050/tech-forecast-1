@@ -67,7 +67,7 @@ export class TrendComponent implements OnInit {
         },
         options: {
           legend: {
-            display: false
+            display: true
           },
 
           tooltips: {

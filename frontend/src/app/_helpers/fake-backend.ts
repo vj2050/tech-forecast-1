@@ -64,6 +64,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       });
     }
 
+    function comparison() {
+      return ok({
+        '2020': {'posts_x': 0.1225744078, 'posts_y': 0.108763207, 'posts': 0.1674608107}
+      });
+    }
+
     function handleRoute() {
       switch (true) {
         case url.endsWith('/users/authenticate') && method === 'POST':
@@ -84,6 +90,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
           return currentTrend();
         case url.includes('/prediction'):
           return prediction();
+        case url.includes('/comparison'):
+          return comparison();
         default:
           // pass through any requests not handled above
           return next.handle(request);

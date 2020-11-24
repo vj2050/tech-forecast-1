@@ -1,72 +1,80 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import Chart from 'chart.js';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
 
 
 @Component({
-    selector: 'app-comparison-cmp',
-    moduleId: module.id,
-    templateUrl: 'comparison.component.html'
+  selector: 'app-comparison-cmp',
+  moduleId: module.id,
+  templateUrl: 'comparison.component.html'
 })
 
-export class ComparisonComponent implements OnInit{
+export class ComparisonComponent implements OnInit {
 
-  public canvas : any;
+  public canvas: any;
   public ctx;
   public chartColor;
   public chartEmail;
   public chartHours;
+  categories: any;
+  selected: any;
 
   private sidebarVisible: boolean;
-  categories = [
-    {id: 1, name: 'Laravel'},
-    {id: 2, name: 'Codeigniter'},
-    {id: 3, name: 'React'},
-    {id: 4, name: 'PHP'},
-    {id: 5, name: 'Tornado'},
-    {id: 6, name: 'Bottle'},
-    {id: 7, name: 'Flask'},
-    {id: 8, name: 'Django'},
-  ];
 
-  selected = [
-    {id: 5, name: 'Tornado'},
-    {id: 6, name: 'Bottle'},
-    {id: 7, name: 'Flask'},
-    {id: 8, name: 'Django'},
-  ];
-
-  getSelectedValue(){
-    console.log(this.selected);
+  constructor(
+    private http: HttpClient
+  ) {
   }
-    ngOnInit(){
-      this.chartColor = "#FFFFFF";
+
+  getSelectedValue() {
+    const tags = []
+    this.selected.forEach(val => {
+      tags.push(val.name);
+    })
 
 
-      this.canvas = document.getElementById("chartEmail");
-      this.ctx = this.canvas.getContext("2d");
+    const params = {
+      tags: tags
+    }
+
+    console.log(this.selected);
+    const response = this.http.get<string>(`${environment.apiUrl}/comparison`, {params: params});
+
+    response.toPromise().then(value => {
+      this.chartColor = '#FFFFFF';
+      const data = [];
+
+      const currentYear = '2020';
+      Object.keys(value[currentYear]).forEach(tag => {
+        data.push(value[currentYear][tag])
+      })
+
+      this.canvas = document.getElementById('chartEmail');
+      this.ctx = this.canvas.getContext('2d');
       this.chartEmail = new Chart(this.ctx, {
         type: 'pie',
         data: {
-          labels: [1, 2, 3],
+          labels: Object.keys(value[currentYear]),
           datasets: [{
-            label: "Emails",
+            label: 'Emails',
             pointRadius: 0,
             pointHoverRadius: 0,
             backgroundColor: [
-              '#e3e3e3',
-              '#4acccd',
-              '#fcc468',
-              '#ef8157'
+              dynamicColors(),
+              dynamicColors(),
+              dynamicColors(),
+              dynamicColors()
             ],
             borderWidth: 0,
-            data: [342, 480, 530, 120]
+            data: data
           }]
         },
 
         options: {
 
           legend: {
-            display: false
+            display: true
           },
 
           pieceLabel: {
@@ -87,7 +95,7 @@ export class ComparisonComponent implements OnInit{
               },
               gridLines: {
                 drawBorder: false,
-                zeroLineColor: "transparent",
+                zeroLineColor: 'transparent',
                 color: 'rgba(255,255,255,0.05)'
               }
 
@@ -98,7 +106,7 @@ export class ComparisonComponent implements OnInit{
               gridLines: {
                 drawBorder: false,
                 color: 'rgba(255,255,255,0.1)',
-                zeroLineColor: "transparent"
+                zeroLineColor: 'transparent'
               },
               ticks: {
                 display: false,
@@ -107,5 +115,27 @@ export class ComparisonComponent implements OnInit{
           },
         }
       });
-    }
+    });
+  }
+
+  ngOnInit() {
+    const response = this.http.get<string[]>(`${environment.apiUrl}/tags`);
+    response.toPromise().then(value => {
+      this.categories = []
+      value.forEach(value1 => {
+        const abc: any = {
+          name: value1,
+          disabled: false,
+        };
+        this.categories.push(abc)
+      })
+    })
+  }
+}
+
+function dynamicColors() {
+  const r = Math.floor(Math.random() * 255);
+  const g = Math.floor(Math.random() * 255);
+  const b = Math.floor(Math.random() * 255);
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
 }

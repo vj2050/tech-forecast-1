@@ -91,7 +91,7 @@ export class PredictionTrendComponent implements OnInit {
 
       const chartOptions = {
         legend: {
-          display: false,
+          display: true,
           position: 'top'
         }
       };
