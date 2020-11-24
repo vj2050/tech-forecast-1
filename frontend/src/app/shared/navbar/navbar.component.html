@@ -22,7 +22,7 @@
     <div class="collapse navbar-collapse justify-content-end" id="collapseExample" [ngbCollapse]="isCollapsed">
       <div>
         <button>
-          <a [routerLink]="['logout']">Logout</a>
+          <a (click)="accountService.logout()">Logout</a>
         </button>
         <span class="navbar-toggler-bar bar1"></span>
         </div>

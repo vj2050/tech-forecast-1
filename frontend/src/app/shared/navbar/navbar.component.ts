@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core
 import {ROUTES} from '../../sidebar/sidebar.component';
 import {Router} from '@angular/router';
 import {Location} from '@angular/common';
+import {AccountService} from '../../_services';
 
 @Component({
   moduleId: module.id,
@@ -33,10 +34,11 @@ export class NavbarComponent implements OnInit {
     {id: 6, name: 'Vue'}
   ];
 
-  getSelectedValue(){
+  getSelectedValue() {
     console.log(this.selected);
   }
-  constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private router: Router) {
+
+  constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private router: Router, private accountService: AccountService) {
     this.location = location;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
