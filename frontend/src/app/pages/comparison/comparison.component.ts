@@ -74,7 +74,8 @@ export class ComparisonComponent implements OnInit {
         options: {
 
           legend: {
-            display: true
+            display: true,
+            position: 'bottom'
           },
 
           pieceLabel: {

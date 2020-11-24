@@ -56,6 +56,7 @@ export class TrendComponent implements OnInit {
         data: {
           labels: this.labels,
           datasets: [{
+            label: a,
             borderColor: '#6bd098',
             backgroundColor: '#6bd098',
             pointRadius: 0,
@@ -67,7 +68,8 @@ export class TrendComponent implements OnInit {
         },
         options: {
           legend: {
-            display: true
+            display: true,
+            position: 'bottom'
           },
 
           tooltips: {

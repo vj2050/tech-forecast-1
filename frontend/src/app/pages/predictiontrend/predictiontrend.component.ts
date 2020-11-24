@@ -67,6 +67,7 @@ export class PredictionTrendComponent implements OnInit {
       tagsForTest.forEach(tag => {
         const color = dynamicColors();
         chartData.push({
+          label: tag,
           data: this.data[tag],
           fill: false,
           borderColor: color,
@@ -82,17 +83,14 @@ export class PredictionTrendComponent implements OnInit {
 
       const speedCanvas = document.getElementById('speedChart');
 
-      console.log(chartData)
-
       const speedData = {
         labels: this.labels,
         datasets: chartData
       };
-
       const chartOptions = {
         legend: {
           display: true,
-          position: 'top'
+          position: 'bottom'
         }
       };
 
