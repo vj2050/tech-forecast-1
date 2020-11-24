@@ -22,7 +22,7 @@ export class PredictionTrendComponent implements OnInit {
   selected: any;
   private responseData: String;
   private labels: string[];
-  private data: number[];
+  private data: {};
 
   constructor(
     private http: HttpClient
@@ -36,19 +36,46 @@ export class PredictionTrendComponent implements OnInit {
       tags.push(val.name);
     })
 
-    const tagsForTest = ['posts', 'posts_x', 'posts_y']
 
     const params = {
       tags: tags
     }
 
     const response = this.http.get<string>(`${environment.apiUrl}/prediction`, {params: params});
+    const tagsForTest = ['posts', 'posts_x', 'posts_y']
+
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
-      this.data = []
+      this.data = {}
+      tagsForTest.forEach(tag => {
+        this.data[tag] = []
+      })
+
       this.labels.forEach(key => {
-        this.data.push(this.responseData[key].posts)
+        tagsForTest.forEach(tag => {
+          this.data[tag].push(this.responseData[key][tag])
+        })
+      })
+
+      let chartData = []
+
+      // tagsForTest.forEach(tag => {
+      //   chartData[tag] = []
+      // })
+
+      tagsForTest.forEach(tag => {
+        const color = dynamicColors();
+        chartData.push({
+          data: this.data[tag],
+          fill: false,
+          borderColor: color,
+          backgroundColor: 'transparent',
+          pointBorderColor: color,
+          pointRadius: 4,
+          pointHoverRadius: 4,
+          pointBorderWidth: 8,
+        })
       })
 
       this.chartColor = '#FFFFFF';
@@ -77,9 +104,11 @@ export class PredictionTrendComponent implements OnInit {
         pointBorderWidth: 8
       };
 
+      console.log(chartData)
+
       const speedData = {
         labels: this.labels,
-        datasets: [dataFirst, dataSecond]
+        datasets: chartData
       };
 
       const chartOptions = {
@@ -113,9 +142,9 @@ export class PredictionTrendComponent implements OnInit {
   }
 }
 
- function dynamicColors() {
-   const r = Math.floor(Math.random() * 255);
-   const g = Math.floor(Math.random() * 255);
-   const b = Math.floor(Math.random() * 255);
-   return 'rgb(' + r + ',' + g + ',' + b + ')';
+function dynamicColors() {
+  const r = Math.floor(Math.random() * 255);
+  const g = Math.floor(Math.random() * 255);
+  const b = Math.floor(Math.random() * 255);
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
