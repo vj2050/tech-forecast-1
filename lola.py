@@ -14,12 +14,13 @@ import bq_helper
 from flask import Flask, jsonify, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from flask_cors import CORS
+import sys
 
 # initialize flask application
 app = Flask(__name__)
 CORS(app)
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="C:\\Users\\Vrindavan\\Downloads\\Demand forecasting-13015a608bb5.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=sys.argv[1]
 stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data","stackoverflow")
 
 queryx = """select EXTRACT(year FROM creation_date) AS year, COUNT(*) AS posts
@@ -69,7 +70,7 @@ def hello():
   return "Hello World!"
 
 
-@app.route('/api/tags', methods = ['GET'])
+@app.route('/tags', methods = ['GET'])
 def tags():
     query1 = """select tags from `bigquery-public-data.stackoverflow.posts_questions` LIMIT 100000"""
     df = stackoverflow.query_to_pandas(query1)
