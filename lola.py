@@ -13,15 +13,16 @@ import os
 import bq_helper
 from flask import Flask, jsonify, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-
+from flask_cors import CORS
 
 # initialize flask application
 app = Flask(__name__)
+CORS(app)
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="C:\\Users\\Vrindavan\\Downloads\\Demand forecasting-13015a608bb5.json"
 stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data","stackoverflow")
 
-queryx = """select EXTRACT(year FROM creation_date) AS year, COUNT(*) AS posts 
+queryx = """select EXTRACT(year FROM creation_date) AS year, COUNT(*) AS posts
         from `bigquery-public-data.stackoverflow.posts_questions`
         where extract(year from creation_date) >= 2008 and extract(year from creation_date) < 2021
         group by year
@@ -37,10 +38,10 @@ def CurrentTrends_merge():
     labels = []
 
     dfall = ["html", "kubernetes"]
-    
+
     if labels==None:
         labels = dfall    #the keywords list
-        
+
     l = len(dfall)
     ###### for every tag, execute the query separately
     for i in range(l):
@@ -49,18 +50,18 @@ def CurrentTrends_merge():
         Posts = stackoverflow.query_to_pandas(query)
         Posts['posts']= Posts['posts']*100/PostsCount.posts
         pd.to_numeric(Posts['year'])
-        Posts.rename(columns = {'posts':dfall[i]}, inplace = True) 
+        Posts.rename(columns = {'posts':dfall[i]}, inplace = True)
         df.append(Posts)
-        
+
     trend = pd.DataFrame(df[0])
     trend = trend.set_index('year')
-    
+
     if(l>1):
         for i in range(1,l):
             trend = pd.merge(trend, df[i], how='outer', on = 'year')
             trend = trend.set_index('year')
             trend = trend.fillna(0)
-    
+
     return trend
 
 @app.route("/")
@@ -68,7 +69,7 @@ def hello():
   return "Hello World!"
 
 
-@app.route('/tags', methods = ['GET'])
+@app.route('/api/tags', methods = ['GET'])
 def tags():
     query1 = """select tags from `bigquery-public-data.stackoverflow.posts_questions` LIMIT 100000"""
     df = stackoverflow.query_to_pandas(query1)
@@ -80,7 +81,7 @@ def tags():
             flat_list.append(item)
     setflat_list = set(flat_list)
     final = json.dumps(list(setflat_list))
-    return final 
+    return final
 
 @app.route('/api/current-trends', methods = ['POST', 'GET'])
 def CurrentTrends():
@@ -88,10 +89,10 @@ def CurrentTrends():
     query3 ="%' group by year order by year"
     df = []
     dfall = ["hadoop","python"]
-    
+
 
     labels = dfall
-   
+
     l = len(dfall)
     ###### for every tag, execute the query separately
     for i in range(l):
@@ -102,12 +103,12 @@ def CurrentTrends():
         pd.to_numeric(Posts['year'])
         Posts.rename(columns = {'posts':dfall[i]}, inplace = True)
         df.append(Posts)
-        
+
 
     trend = pd.merge(df[0], df[1], how='inner', on = 'year')
     trend = trend.set_index('year')
-    
-    
+
+
     if(l>2):
         for i in range(2,l):
             trend = pd.merge(trend, df[i], how='outer', on = 'year')
@@ -127,63 +128,63 @@ def CurrentTrends():
 def FutureTrends():
 
     #plt.figure(figsize=(20,10))
-    
+
     query1 = "select EXTRACT(year FROM creation_date) AS year, COUNT(id) as posts from `bigquery-public-data.stackoverflow.posts_questions` where extract(year from creation_date) >=2009 and extract(year from creation_date) < 2021 and tags like '%"
     query3 ="%' group by year order by year"
     df = []
     new = []
-    
-    years = [2021, 2022, 2023] 
-    dfall = ["html", "kubernetes"]  
+
+    years = [2021, 2022, 2023]
+    dfall = ["html", "kubernetes"]
     labels= []
 
-    l = len(dfall) 
-    
+    l = len(dfall)
+
     if (labels==None):
         labels = dfall
-        
+
     for i in range(l):
         query2 = dfall[i]
         query = query1+query2+query3
         Posts = stackoverflow.query_to_pandas(query)
         Posts['posts']= Posts['posts']*100/PostsCount.posts
         pd.to_numeric(Posts['year'])
-        
+
         X_train=Posts['year'].values.reshape(-1,1)
         y_train=Posts['posts'].values.reshape(-1,1)
         reg=LinearRegression()
-        
+
         X_test = [[2021], [2022], [2023]]     #hardcoded 3 years
         reg.fit(X_train,y_train)
         predictions = reg.predict(X_test)
         #new.append(predictions)
-        
+
         dummy = pd.DataFrame(columns = ['year', dfall[i]])
         dummy['year']= years
         dummy[dfall[i]] = predictions
-        
+
         new.append(dummy)
         #predictions.reshape((1,len(X_test))
-    
+
     trendfuture = pd.DataFrame(new[0])            #first keyword data + predictions
     trendfuture = trendfuture.set_index('year')
-    
+
     if(l>1):                  # if more than 1 keyword
         for i in range(1,l):
             #print()
             trendfuture = pd.merge(trendfuture, new[i], how='outer', on = 'year')
             trendfuture = trendfuture.set_index('year')
     #print(trendfuture)
-    
+
     curr_trendmerge = CurrentTrends_merge()
-    
+
     #print(curr_trendmerge)
     final = pd.concat([curr_trendmerge, trendfuture])
     future_trendsjson = final.to_json(orient="index")
     return future_trendsjson
 
 """
-    
+
     final.plot(kind='line')
     plt.xlabel('Year', fontsize=15)
     plt.ylabel('Posts %', fontsize=15)
@@ -198,12 +199,12 @@ def FutureTrends():
 ## Converting to JSON :
 
     future_trendsjson = final.to_json(orient="index")
-    
+
     #parsed = json.loads(curr_result1)
     #json.dumps(parsed, indent=4)
-    
+
     return future_trendsjson
-"""    
+"""
 
 """
     fig, ax = plt.subplots()
@@ -212,7 +213,7 @@ def FutureTrends():
     plt.plot(trend)
     plt.xlabel('Year', fontsize=15)
     plt.ylabel('Posts %', fontsize=15)
-    
+
     plt.xticks(y_pos,fontsize=8)
     plt.yticks(fontsize=8)
     #plt.title(title)
@@ -224,12 +225,12 @@ def FutureTrends():
 
 
     return send_file(img, mimetype = 'image/png')
-    
-    
+
+
     #parsed = json.loads(curr_result1)
     #json.dumps(parsed, indent=4)
     #print(trend)
-    
+
     #return trend
 
 """
