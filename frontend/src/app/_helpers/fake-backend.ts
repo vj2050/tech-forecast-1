@@ -71,26 +71,27 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 
     function handleRoute() {
+      console.log(url)
       switch (true) {
-        case url.endsWith('/users/authenticate') && method === 'POST':
+        case url.includes('google.com') && url.endsWith('/users/authenticate') && method === 'POST':
           return authenticate();
-        case url.endsWith('/users/register') && method === 'POST':
+        case url.includes('google.com') && url.endsWith('/users/register') && method === 'POST':
           return register();
-        case url.endsWith('/users') && method === 'GET':
+        case url.includes('google.com') && url.endsWith('/users') && method === 'GET':
           return getUsers();
-        case url.match(/\/users\/\d+$/) && method === 'GET':
+        case url.includes('google.com') && url.match(/\/users\/\d+$/) && method === 'GET':
           return getUserById();
-        case url.match(/\/users\/\d+$/) && method === 'PUT':
+        case url.includes('google.com') && url.match(/\/users\/\d+$/) && method === 'PUT':
           return updateUser();
-        case url.match(/\/users\/\d+$/) && method === 'DELETE':
+        case url.includes('google.com') && url.match(/\/users\/\d+$/) && method === 'DELETE':
           return deleteUser();
-        case url.endsWith('/tags'):
+        case url.includes('google.com') && url.endsWith('/tags'):
           return getTags();
-        case url.includes('/current/trend'):
+        case url.includes('google.com') && url.includes('/current/trend'):
           return currentTrend();
-        case url.includes('/prediction'):
+        case url.includes('google.com') && url.includes('/prediction'):
           return prediction();
-        case url.includes('/comparison'):
+        case url.includes('google.com') && url.includes('/comparison'):
           return comparison();
         default:
           // pass through any requests not handled above

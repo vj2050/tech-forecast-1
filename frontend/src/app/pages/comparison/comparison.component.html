@@ -6,7 +6,7 @@
     <form>
       <div class="input-group">
         <!--          <input type="text" value="" class="form-control" placeholder="Search...">-->
-        <ng-select [items]="categories"
+        <ng-select [items]="categories "
                    bindLabel="name"
                    appendTo="body"
                    placeholder="Search here ..."
@@ -15,6 +15,7 @@
                    class="form-control"
                    name="test"
                    style="width: 400px"
+                   loadingText="Loading..."
         >
         </ng-select>
         <div class="input-group-append" (click)="getSelectedValue()">
