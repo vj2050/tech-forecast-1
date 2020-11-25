@@ -67,6 +67,21 @@ def CurrentTrends_merge():
 def hello():
   return "Hello World!"
 
+
+@app.route('/tags', methods = ['GET'])
+def tags():
+    query1 = """select tags from `bigquery-public-data.stackoverflow.posts_questions` LIMIT 100000"""
+    df = stackoverflow.query_to_pandas(query1)
+    llist = df['tags'].to_list()
+    new_list = [i.split('|') for i in llist]
+    flat_list = []
+    for sublist in new_list:
+        for item in sublist:
+            flat_list.append(item)
+    setflat_list = set(flat_list)
+    final = json.dumps(list(setflat_list))
+    return final 
+
 @app.route('/api/current-trends', methods = ['POST', 'GET'])
 def CurrentTrends():
     query1 = "select EXTRACT(year FROM creation_date) AS year, COUNT(id) as posts from `bigquery-public-data.stackoverflow.posts_questions` where extract(year from creation_date) >=2009 and extract(year from creation_date) < 2021 and tags like '%"
