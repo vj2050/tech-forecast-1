@@ -1,7 +1,10 @@
+import sys
+
 import numpy as np # linear algebra import pandas as pd # data processing
 import matplotlib.pyplot as plt # graphs and charts import pandas.testing as
 from io import BytesIO
 import sklearn
+from flask_cors import CORS
 from sklearn.model_selection import train_test_split # data splitting
 import statsmodels.api as sm
 from sklearn import metrics
@@ -14,11 +17,10 @@ import bq_helper
 from flask import Flask, jsonify, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-
 # initialize flask application
 app = Flask(__name__)
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="C:\\Users\\Vrindavan\\Downloads\\Demand forecasting-13015a608bb5.json"
+CORS(app)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=sys.argv[1]
 stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data","stackoverflow")
 
 queryx = """select EXTRACT(year FROM creation_date) AS year, COUNT(*) AS posts 
