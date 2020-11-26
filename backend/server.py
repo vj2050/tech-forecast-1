@@ -74,17 +74,15 @@ def hello():
 
 @app.route('/tags', methods=['GET'])
 def tags():
-    query1 = """SELECT Category, COUNT(*) AS TagsTotal 
+    queryFetchTopTags = """SELECT Category, COUNT(*) AS TagsTotal 
     FROM `bigquery-public-data.stackoverflow.posts_questions` 
     CROSS JOIN UNNEST(SPLIT(tags, '|')) AS Category 
     GROUP BY Category 
     Order By TagsTotal Desc 
     LIMIT 100"""
-    df = stackoverflow.query_to_pandas(query1)
-    llist = df['Category'].to_list()
-    final = json.dumps(llist)
-    return final
-
+    df = stackoverflow.query_to_pandas(queryFetchTopTags)
+    tagList = df['Category'].to_list()
+    return json.dumps(tagList)
 
 @app.route('/api/current-trends', methods=['POST', 'GET'])
 def CurrentTrends():
