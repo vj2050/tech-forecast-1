@@ -120,8 +120,9 @@ export class ComparisonComponent implements OnInit {
   }
 
   ngOnInit() {
-    const response = this.http.get<string[]>(`${environment.apiUrl}/tags`);
+    const response = this.http.get<string[]>(`http://localhost:5000/tags`);
     response.toPromise().then(value => {
+      console.log(value)
       this.categories = []
       value.forEach(value1 => {
         const abc: any = {
