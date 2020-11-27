@@ -11,6 +11,15 @@ class DataProvider(object):
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self.credential_file
         self.stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data", "stackoverflow")
 
+    def get_tag_info(self, tag_name):
+        query = f"""
+        select w.body 
+        from `bigquery-public-data.stackoverflow.posts_tag_wiki` AS w, 
+        `bigquery-public-data.stackoverflow.tags` AS t  
+        where t.tag_name="{tag_name}" and w.id=t.wiki_post_id
+        """
+        return self.stackoverflow.query_to_pandas(query)
+
     def escore_data_for_tag(self, tag_name):
         h1 = 0.1
         h2 = 0.000001
