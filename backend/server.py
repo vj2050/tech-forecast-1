@@ -17,7 +17,7 @@ forecast_generator = ForecastGenerator(predict_years=2)
 
 @app.route('/tags', methods=['GET'])
 def tags():
-    tagList = data_provider.get_top_tags(limit=25)
+    tagList = sorted(data_provider.get_top_tags(limit=50))
     return json.dumps(tagList)
 
 

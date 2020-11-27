@@ -44,7 +44,7 @@ class DataProvider(object):
             """
         return self.stackoverflow.query_to_pandas(query)
 
-    def get_top_tags(self, limit):
+    def get_top_tags(self, limit) -> list:
         queryFetchTopTags = f"""SELECT Category, COUNT(*) AS TagsTotal 
         FROM `bigquery-public-data.stackoverflow.posts_questions` 
         CROSS JOIN UNNEST(SPLIT(tags, '|')) AS Category 
