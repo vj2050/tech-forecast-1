@@ -18,10 +18,14 @@ from flask import Flask, jsonify, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 # initialize flask application
+from data_provider import DataProvider
+
 app = Flask(__name__)
 CORS(app)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = sys.argv[1]
 stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data", "stackoverflow")
+
+data_provider = DataProvider(sys.argv[1])
 
 queryx = """select EXTRACT(year FROM creation_date) AS year, COUNT(*) AS posts 
         from `bigquery-public-data.stackoverflow.posts_questions`
@@ -236,14 +240,7 @@ def hello():
 
 @app.route('/tags', methods=['GET'])
 def tags():
-    queryFetchTopTags = """SELECT Category, COUNT(*) AS TagsTotal 
-    FROM `bigquery-public-data.stackoverflow.posts_questions` 
-    CROSS JOIN UNNEST(SPLIT(tags, '|')) AS Category 
-    GROUP BY Category 
-    Order By TagsTotal Desc 
-    LIMIT 25"""
-    df = stackoverflow.query_to_pandas(queryFetchTopTags)
-    tagList = df['Category'].to_list()
+    tagList = data_provider.get_top_tags(limit=25)
     return json.dumps(tagList)
 
 

@@ -6,10 +6,10 @@ import bq_helper
 class DataProvider(object):
     def __init__(self, credential_file_path):
         self.credential_file = credential_file_path
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self.credential_file
+        self.stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data", "stackoverflow")
 
     def escore_data_for_tag(self, tag_name):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self.credential_file
-        stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data", "stackoverflow")
         h1 = 0.1
         h2 = 0.000001
         h3 = 0.005
@@ -31,4 +31,15 @@ class DataProvider(object):
             group by cdate
             order by cdate
             """
-        return stackoverflow.query_to_pandas(query)
+        return self.stackoverflow.query_to_pandas(query)
+
+    def get_top_tags(self, limit):
+        queryFetchTopTags = f"""SELECT Category, COUNT(*) AS TagsTotal 
+        FROM `bigquery-public-data.stackoverflow.posts_questions` 
+        CROSS JOIN UNNEST(SPLIT(tags, '|')) AS Category 
+        GROUP BY Category 
+        Order By TagsTotal Desc 
+        LIMIT {limit}"""
+        df = self.stackoverflow.query_to_pandas(queryFetchTopTags)
+        tagList = df['Category'].to_list()
+        return tagList
