@@ -31,6 +31,42 @@
 #
 #     return trend
 
+## Should be displayed as TABLE **** Use below function for email notifications part : Top trending tags from 1st Jan 2020 to 6th September 2020
+### (last date of updation..  next quarterly update in December)
+
+
+# def top_tags():
+#     query_testing = """SELECT tag, COUNT(*) c
+#     FROM (
+#       SELECT SPLIT(tags, '|') tags
+#       FROM `bigquery-public-data.stackoverflow.posts_questions` a
+#       WHERE EXTRACT(DATE FROM creation_date)>= '2020-01-01' AND EXTRACT(DATE FROM creation_date)<= '2020-09-06'
+#     ), UNNEST(tags) tag
+#     GROUP BY 1
+#     ORDER BY 2 DESC
+#     LIMIT 10
+#     """
+#
+#     query_toptags = stackoverflow.query_to_pandas(query_testing)
+#     toptags_json = query_toptags.to_json(orient='index')
+#     return toptags_json
+#
+#
+# # Display as TABLE (For Notifications Email Functionality) Top 10 most viewed Questions in general in current year 2020
+# def Topviewed_general():
+#     query_topGen = """SELECT id, title, answer_count answers, favorite_count favs,
+#                         view_count views, score votes
+#                         FROM `bigquery-public-data.stackoverflow.posts_questions`
+#                         WHERE EXTRACT(YEAR FROM creation_date)= 2020
+#                         order by views DESC
+#                         LIMIT 10
+#                         """
+#
+#     topGen = stackoverflow.query_to_pandas(query_topGen)
+#     topGen = topGen.fillna(0.0)
+#     topGen_JSON = topGen.to_json(orient='index')
+#     print(topGen)
+#     return topGen_JSON
 
 def del_order_mark(df):
     new_Reputation = []
