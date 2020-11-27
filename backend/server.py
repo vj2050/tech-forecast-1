@@ -1,21 +1,13 @@
+import json
+import os
 import sys
 
-import numpy as np  # linear algebra import pandas as pd # data processing
-import matplotlib.pyplot as plt  # graphs and charts import pandas.testing as
-from io import BytesIO
-import sklearn
-from flask_cors import CORS
-from sklearn.model_selection import train_test_split  # data splitting
-import statsmodels.api as sm
-from sklearn import metrics
-from sklearn.linear_model import LinearRegression  # Linear model
-from flask import Flask, render_template, request, json, send_file
-import json
-import pandas as pd
-import os
 import bq_helper
-from flask import Flask, jsonify, request
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import pandas as pd
+from flask import Flask
+from flask import json
+from flask_cors import CORS
+from sklearn.linear_model import LinearRegression  # Linear model
 
 # initialize flask application
 from data_provider import DataProvider
@@ -36,201 +28,6 @@ queryx = """select EXTRACT(year FROM creation_date) AS year, COUNT(*) AS posts
 
 PostsCount = stackoverflow.query_to_pandas(queryx)
 
-
-def CurrentTrends_merge():
-    query1 = "select EXTRACT(year FROM creation_date) AS year, COUNT(id) as posts from `bigquery-public-data.stackoverflow.posts_questions` where extract(year from creation_date) >=2009 and extract(year from creation_date) < 2021 and tags like '%"
-    query3 = "%' group by year order by year"
-    df = []
-    labels = []
-
-    dfall = ["html", "kubernetes"]
-
-    if labels == None:
-        labels = dfall  # the keywords list
-
-    l = len(dfall)
-    ###### for every tag, execute the query separately
-    for i in range(l):
-        query2 = dfall[i]  # dfall = ['hadoop','spark','hive']
-        query = query1 + query2 + query3
-        Posts = stackoverflow.query_to_pandas(query)
-        Posts['posts'] = Posts['posts'] * 100 / PostsCount.posts
-        pd.to_numeric(Posts['year'])
-        Posts.rename(columns={'posts': dfall[i]}, inplace=True)
-        df.append(Posts)
-
-    trend = pd.DataFrame(df[0])
-    trend = trend.set_index('year')
-
-    if (l > 1):
-        for i in range(1, l):
-            trend = pd.merge(trend, df[i], how='outer', on='year')
-            trend = trend.set_index('year')
-            trend = trend.fillna(0)
-
-    return trend
-
-
-### This function is required for reputation functions :
-def del_order_mark(df):
-    new_Reputation = []
-    for i in range(len(df)): # delete the order mark in "repulation"
-        new_Reputation.append(df['Reputation'][i][1:])
-    df.Reputation = new_Reputation
-    return df
-
-
-def Reputation_answered(keyword):
-    # Reputation of the user making comments to answered questions for given tag.
-    query_testing1 = """
-    select 
-        case
-            when uc.reputation between 1 and 100 then '11- 100'
-            when uc.reputation between 101 and 1000 then '2101- 1000'
-            when uc.reputation between 1001 and 10000 then '31001- 10000'
-            when uc.reputation between 10001 and 100000 then '410001- 100000'
-            when uc.reputation > 100000 THEN '5> 100000'
-        end as Reputation,
-        sum(uc.num) as num
-    from(    
-    select u.reputation, count(*) as num
-    from `bigquery-public-data.stackoverflow.users` u
-    inner join(
-        select c.user_id
-        from `bigquery-public-data.stackoverflow.comments` c
-        inner join (
-            select id from `bigquery-public-data.stackoverflow.posts_questions`
-            where answer_count > 0 and tags like '%"""
-
-    query_testing2 = keyword
-
-    query_testing3 = """%') q
-        on post_id = q.id)
-    on id = user_id
-    group by reputation
-    order by reputation asc) uc
-    group by Reputation
-    order by Reputation
-    """
-    final_query = query_testing1+query_testing2+query_testing3
-    df_reputation1 = stackoverflow.query_to_pandas(final_query)
-    df_reputation1 = del_order_mark(df_reputation1)
-    
-    reputation_json1 = df_reputation1.to_json(orient = 'index')
-    #print(df_reputation1)
-    
-#     labels = df_reputation1.Reputation
-#     sizes = round(100 * df_reputation1.num / df_reputation1.num.sum(),2)
-#     colors = ['#EC7063','#3498DB','#F7DC6F','#BB8FCE','#2ECC71']
-#     explode = (0.05,0.05,0.05,0.05,0.05)
-
-#     fig1, ax1 = plt.subplots()
-#     ax1.pie(sizes, colors = colors, labels=labels, autopct='%1.1f%%', startangle=90, explode=explode)
-#     ax1.axis('equal')  
-#     plt.tight_layout()
-#     plt.title("Reputation of the user making comments to answered questions associated with given Tag", fontsize = 14)
-    
-    return reputation_json1    
-
-
-def Reputation_unanswered(keyword):
-    # Reputation of the user making comments to answered questions for given tag.
-    query_unanswered1 = """
-    select 
-        case
-            when uc.reputation between 1 and 100 then '11- 100'
-            when uc.reputation between 101 and 1000 then '2101- 1000'
-            when uc.reputation between 1001 and 10000 then '31001- 10000'
-            when uc.reputation between 10001 and 100000 then '410001- 100000'
-            when uc.reputation > 100000 THEN '5> 100000'
-        end as Reputation,
-        sum(uc.num) as num
-    from(    
-    select u.reputation, count(*) as num
-    from `bigquery-public-data.stackoverflow.users` u
-    inner join(
-        select c.user_id
-        from `bigquery-public-data.stackoverflow.comments` c
-        inner join (
-            select id from `bigquery-public-data.stackoverflow.posts_questions`
-            where answer_count = 0 and tags like '%"""
-
-    query_unanswered2 = keyword
-
-    query_unanswered3 = """%') q
-        on post_id = q.id)
-    on id = user_id
-    group by reputation
-    order by reputation asc) uc
-    group by Reputation
-    order by Reputation
-    """
-    aggregated = query_unanswered1+query_unanswered2+query_unanswered3
-    df_reputation2 = stackoverflow.query_to_pandas(aggregated)
-    df_reputation2 = del_order_mark(df_reputation2)
-    
-    reputation_json2 = df_reputation2.to_json(orient = 'index')
-    #print(df_reputation2)
-    
-#     labels = df_reputation2.Reputation
-#     sizes = round(100 * df_reputation2.num / df_reputation2.num.sum(),2)
-#     #colors = ['#EC7063','#3498DB','#F7DC6F','#BB8FCE','#2ECC71']
-#     colors = ['#AEB6BF', '#A569BD','#CD5C5C', '#F39C12', '#27AE60']
-#     explode = (0.05,0.05,0.05,0.05,0.05)
-
-#     fig1, ax1 = plt.subplots()
-#     ax1.pie(sizes, colors = colors, labels=labels, autopct='%1.1f%%', startangle=90, explode=explode)
-#     ax1.axis('equal')  
-#     plt.tight_layout()
-#     plt.title("Reputation of the user making comments to unanswered questions associated with given Tag", fontsize = 14)
-    
-    return reputation_json2  
-
-
-# Display as Table in UI*****Top 10 most viewed questions in 2020 for Given 1 tag only: (Current Trends)
-def Topviewed_questions(keyword):                                   ## takes 1 parameter only
-    #keyword = 'python'
-    query_topques1 = """SELECT id, title, answer_count answers, favorite_count favs,
-                        view_count views, score votes
-                        FROM `bigquery-public-data.stackoverflow.posts_questions` 
-                        WHERE EXTRACT(YEAR FROM creation_date)= 2020 AND tags like '%"""
-    query_topques2 = keyword
-    query_topques3 = """%'
-                        order by views DESC 
-                        LIMIT 10
-                        """
-    query_topques = query_topques1+query_topques2+query_topques3
-    topques = stackoverflow.query_to_pandas(query_topques)
-    topques = topques.fillna(0.0)
-    topques_JSON = topques.to_json(orient = 'index')
-    #print(topques)
-    return topques_JSON
-
-
-### (Current Trends page) Number of questions posted & number of questions been answered for given 1 Tag Only :
-#@app.route('/answered-ques', methods=['GET', 'POST'])
-def Answered_questions(keyword):                       #takes 1 parameter
-    #keyword = 'python'
-    query_answer1  = """SELECT
-      EXTRACT(YEAR FROM creation_date) AS Year,
-      COUNT(*) AS Number_of_Questions,
-      SUM(IF(answer_count > 0, 1, 0)) AS Number_Questions_with_Answers
-    FROM
-      `bigquery-public-data.stackoverflow.posts_questions` where tags like '%"""
-    query_answer2 = keyword
-    query_answer3 = """%'
-    GROUP BY
-      Year
-    ORDER BY
-      Year;
-            """
-    query_answer = query_answer1+query_answer2+query_answer3
-    answer_rate = stackoverflow.query_to_pandas(query_answer)
-    answer_rate = answer_rate.set_index('Year')
-    #print(answer_rate)
-    answer_rate_json = answer_rate.to_json(orient= 'index')
-    
-    return answer_rate_json
 
 
 @app.route("/")
@@ -280,10 +77,10 @@ def CurrentTrends():
     #Reputation_Answered(), Reputation_unanswered(), Topviewed_questions(), Answered_questions() Function calls below :
 
  # ************ Need to pass keyword, waiting for harshil's updated current trends , future trends functions : 
-    reputation_json1 = Reputation_answered('python')   
-    reputation_json2 = Reputation_unanswered('python')
-    topviewed_questions = Topviewed_questions('python')
-    answered_questions = Answered_questions('python')
+    reputation_json1 = data_provider.user_reputation_answered('python')
+    reputation_json2 = data_provider.user_reputation_unanswered('python')
+    topviewed_questions = data_provider.top_viewed_questions('python', 10)
+    answered_questions = data_provider.answered_questions('python')
 
     curr_trendsjson = json.loads(curr_trendsjson)         #converting JSON string to dictionary
     reputation_json1 = json.loads(reputation_json1)       #converting JSON string to dictionary
