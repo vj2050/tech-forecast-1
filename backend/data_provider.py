@@ -7,7 +7,7 @@ class DataProvider(object):
     def __init__(self, credential_file_path):
         self.credential_file = credential_file_path
 
-    def getEScoreDataForTag(self, tag_name):
+    def escore_data_for_tag(self, tag_name):
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self.credential_file
         stackoverflow = bq_helper.BigQueryHelper("bigquery-public-data", "stackoverflow")
         h1 = 0.1
@@ -24,7 +24,7 @@ class DataProvider(object):
             ({h5}) * (COUNT(DISTINCT accepted_answer_id)/COUNT(*) ) ) as eScore,
             
             from `bigquery-public-data.stackoverflow.posts_questions`
-            where 
+            where post_type_id=1 and
             extract(year from creation_date) >= 2012 
             and extract(year from creation_date) < 2020 
             and tags LIKE '%|{tag_name}|%'
