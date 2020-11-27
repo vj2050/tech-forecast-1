@@ -7,6 +7,7 @@ from flask_cors import CORS
 
 from data_provider import DataProvider
 from forecast_generator import ForecastGenerator
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -54,9 +55,18 @@ def current_trends():
 
 @app.route('/future-trends', methods=['POST', 'GET'])
 def future_trends():
-    tag = "java"
-    data = data_provider.escore_data_for_tag(tag)
-    final = forecast_generator.forecast(data)
+    tags = ["java", "reactjs"]
+
+    final = pd.DataFrame()
+    for tag in tags:
+        data = data_provider.escore_data_for_tag(tag)
+        forecast = forecast_generator.forecast(data)
+        forecast.rename({"val": tag}, axis='columns', inplace=True)
+        print(forecast.keys())
+        if final.empty:
+            final = forecast
+        else:
+            final = pd.concat([final, forecast], axis=1, sort=False)
     future_trendsjson = final.to_json(orient="index")
     return future_trendsjson
 

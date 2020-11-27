@@ -6,7 +6,7 @@ class ForecastGenerator:
     def __init__(self, predict_years):
         self.years = predict_years
 
-    def forecast(self, escore_data):
+    def forecast(self, escore_data) -> pd.DataFrame:
         escore_data.rename({"eScore": "y", "cdate": "ds"}, axis='columns', inplace=True)
         prophet = fbprophet.Prophet(changepoint_prior_scale=0.85, seasonality_prior_scale=5)
         prophet.fit(escore_data)
