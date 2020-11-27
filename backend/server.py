@@ -5,9 +5,8 @@ from flask import Flask
 from flask import json
 from flask_cors import CORS
 
-# initialize flask application
 from data_provider import DataProvider
-from forecast import ForecastGenerator
+from forecast_generator import ForecastGenerator
 
 app = Flask(__name__)
 CORS(app)
@@ -15,65 +14,63 @@ CORS(app)
 data_provider = DataProvider(credential_file_path=sys.argv[1])
 forecast_generator = ForecastGenerator(predict_years=2)
 
+
 @app.route('/tags', methods=['GET'])
 def tags():
     tagList = data_provider.get_top_tags(limit=25)
     return json.dumps(tagList)
 
 
-
 @app.route('/current-trends', methods=['POST', 'GET'])
-def CurrentTrends():
+def current_trends():
     tag = "java"
     trend = data_provider.escore_data_for_tag(tag)
     trend.set_index('cdate', inplace=True)
     curr_trendsjson = trend.to_json(orient="index")
 
-    ###################################################################################################################################################################
-    #Reputation_Answered(), Reputation_unanswered(), Topviewed_questions(), Answered_questions() Function calls below :
+    reputation_json1 = data_provider.user_reputation_answered(tag)
+    reputation_json2 = data_provider.user_reputation_unanswered(tag)
+    topviewed_questions = data_provider.top_viewed_questions(tag, 10)
+    answered_questions = data_provider.answered_questions(tag)
 
- # ************ Need to pass keyword, waiting for harshil's updated current trends , future trends functions : 
-    reputation_json1 = data_provider.user_reputation_answered('python')
-    reputation_json2 = data_provider.user_reputation_unanswered('python')
-    topviewed_questions = data_provider.top_viewed_questions('python', 10)
-    answered_questions = data_provider.answered_questions('python')
-
-    curr_trendsjson = json.loads(curr_trendsjson)         #converting JSON string to dictionary
-    reputation_json1 = json.loads(reputation_json1)       #converting JSON string to dictionary
-    reputation_json2 = json.loads(reputation_json2)       #converting JSON string to dictionary
+    curr_trendsjson = json.loads(curr_trendsjson)  # converting JSON string to dictionary
+    reputation_json1 = json.loads(reputation_json1)  # converting JSON string to dictionary
+    reputation_json2 = json.loads(reputation_json2)  # converting JSON string to dictionary
     topviewed_questions = json.loads(topviewed_questions)
     answered_questions = json.loads(answered_questions)
 
-    payload = {                                              # merged Dictionary
-    'current_trends': curr_trendsjson,
-    'reputation_answered': reputation_json1,
-    'reputation_unanswered': reputation_json2,
-    'Top_viewed_questions': topviewed_questions,
-    'Answered_Questions': answered_questions
+    payload = {  # merged Dictionary
+        'current_trends': curr_trendsjson,
+        'reputation_answered': reputation_json1,
+        'reputation_unanswered': reputation_json2,
+        'Top_viewed_questions': topviewed_questions,
+        'Answered_Questions': answered_questions
     }
 
-    final_payload = json.dumps(payload)                  #converting dictionary back to JSON object
+    final_payload = json.dumps(payload)  # converting dictionary back to JSON object
 
     return (final_payload)
 
 
 @app.route('/future-trends', methods=['POST', 'GET'])
-def FutureTrends():
+def future_trends():
     tag = "java"
     data = data_provider.escore_data_for_tag(tag)
     final = forecast_generator.forecast(data)
     future_trendsjson = final.to_json(orient="index")
     return future_trendsjson
 
+
 @app.route('/comparison', methods=['GET', 'POST'])
-def CurrentTrends_compare():
-    #TODO: Make calls for multiple keywords for comparison
+def compare_trends():
+    # TODO: Make calls for multiple keywords for comparison
     tag = "java"
     trend = data_provider.escore_data_for_tag(tag)
     trend.set_index('cdate', inplace=True)
     curr_trendsjson = trend.to_json(orient="index")
 
     return curr_trendsjson
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -55,7 +55,6 @@ class DataProvider(object):
         tagList = df['Category'].to_list()
         return tagList
 
-
     def user_reputation_answered(self, tag_name):
         # Reputation of the user making comments to answered questions for given tag.
         query = f"""
