@@ -27,7 +27,9 @@ def tags():
 def current_trends():
     tag = "java"
     trend = data_provider.escore_data_for_tag(tag)
+    trend['cdate'] = pd.to_datetime(trend['cdate'])
     trend.set_index('cdate', inplace=True)
+    trend = trend.resample('MS').sum()
     curr_trendsjson = trend.to_json(orient="index")
     return curr_trendsjson
 
