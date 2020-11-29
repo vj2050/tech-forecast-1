@@ -5,10 +5,11 @@ from flask import Flask, request
 from flask import json
 from flask_cors import CORS
 
+
 from data_provider import DataProvider
 from forecast_generator import ForecastGenerator
 import pandas as pd
-
+import numpy as np
 app = Flask(__name__)
 CORS(app)
 
@@ -28,29 +29,35 @@ def current_trends():
     trend = data_provider.escore_data_for_tag(tag)
     trend.set_index('cdate', inplace=True)
     curr_trendsjson = trend.to_json(orient="index")
+    return curr_trendsjson
 
-    reputation_json1 = data_provider.user_reputation_answered(tag)
-    reputation_json2 = data_provider.user_reputation_unanswered(tag)
-    topviewed_questions = data_provider.top_viewed_questions(tag, 10)
-    answered_questions = data_provider.answered_questions(tag)
 
-    curr_trendsjson = json.loads(curr_trendsjson)  # converting JSON string to dictionary
-    reputation_json1 = json.loads(reputation_json1)  # converting JSON string to dictionary
-    reputation_json2 = json.loads(reputation_json2)  # converting JSON string to dictionary
-    topviewed_questions = json.loads(topviewed_questions)
-    answered_questions = json.loads(answered_questions)
+@app.route('/current-trends/rep/answered', methods=['POST', 'GET'])
+def userRepForAnswered():
+    tag = "java"
+    reputation = data_provider.user_reputation_answered(tag)
+    return reputation.to_json(orient='index')
 
-    payload = {  # merged Dictionary
-        'current_trends': curr_trendsjson,
-        'reputation_answered': reputation_json1,
-        'reputation_unanswered': reputation_json2,
-        'Top_viewed_questions': topviewed_questions,
-        'Answered_Questions': answered_questions
-    }
 
-    final_payload = json.dumps(payload)  # converting dictionary back to JSON object
+@app.route('/current-trends/rep/unanswered', methods=['POST', 'GET'])
+def userRepForUnAnswered():
+    tag = "java"
+    reputation = data_provider.user_reputation_unanswered(tag)
+    return reputation.to_json(orient='index')
 
-    return (final_payload)
+
+@app.route('/current-trends/ques/top', methods=['POST', 'GET'])
+def topQuestions():
+    tag = "java"
+    questions = data_provider.top_viewed_questions(tag, 10)
+    return questions.to_json(orient='index')
+
+
+@app.route('/current-trends/ques/answered', methods=['POST', 'GET'])
+def answeredQuestions():
+    tag = "java"
+    questions = data_provider.answered_questions(tag)
+    return questions.to_json(orient='index')
 
 
 @app.route('/future-trends', methods=['POST', 'GET'])
@@ -67,8 +74,7 @@ def future_trends():
             final = forecast
         else:
             final = pd.concat([final, forecast], axis=1, sort=False)
-    future_trendsjson = final.to_json(orient="index")
-    return future_trendsjson
+    return final.to_json(orient="index")
 
 
 @app.route('/comparison', methods=['GET', 'POST'])

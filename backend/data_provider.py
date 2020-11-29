@@ -87,10 +87,7 @@ class DataProvider(object):
 
         reputation = self.stackoverflow.query_to_pandas(query)
         reputation = del_order_mark(reputation)
-
-        reputation_json1 = reputation.to_json(orient='index')
-
-        return reputation_json1
+        return reputation
 
     def user_reputation_unanswered(self, tag_name):
         # Reputation of the user making comments to answered questions for given tag.
@@ -121,10 +118,9 @@ class DataProvider(object):
         order by Reputation
         """
         reputation = self.stackoverflow.query_to_pandas(query)
-        reputation = self.del_order_mark(reputation)
-        reputation_json2 = reputation.to_json(orient='index')
+        reputation = del_order_mark(reputation)
 
-        return reputation_json2
+        return reputation
 
     # Display as Table in UI*****Top 10 most viewed questions in 2020 for Given 1 tag only: (Current Trends)
     def top_viewed_questions(self, tag_name, count):  ## takes 1 parameter only
@@ -138,8 +134,7 @@ class DataProvider(object):
                             """
         topques = self.stackoverflow.query_to_pandas(query)
         topques = topques.fillna(0.0)
-        topques_JSON = topques.to_json(orient='index')
-        return topques_JSON
+        return topques
 
     ### (Current Trends page) Number of questions posted & number of questions been answered for given 1 Tag Only :
     # @app.route('/answered-ques', methods=['GET', 'POST'])
@@ -158,6 +153,5 @@ class DataProvider(object):
                 """
         answer_rate = self.stackoverflow.query_to_pandas(query)
         answer_rate = answer_rate.set_index('Year')
-        answer_rate_json = answer_rate.to_json(orient='index')
 
-        return answer_rate_json
+        return answer_rate
