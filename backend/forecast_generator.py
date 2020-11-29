@@ -14,7 +14,7 @@ class ForecastGenerator:
         forecast = prophet.predict(predict_data)
         forecast.ds = pd.to_datetime(forecast.ds)
         forecast_simple = pd.DataFrame()
-        forecast_simple['val'] = forecast['yhat']
+        forecast_simple['val'] = forecast['yhat'].mask(forecast['yhat'].lt(0), 0)
         forecast_simple['date'] = forecast['ds']
         forecast_simple.set_index('date', inplace=True)
         return forecast_simple.resample('MS').sum()

@@ -26,13 +26,14 @@ class DataProvider(object):
         h3 = 0.005
         h4 = 0.001
         h5 = 0.1
+        h6 = 0.1
         query = f"""select 
             DATE(creation_date) AS cdate, 
             (({h1}) * (COUNT(*) ) +
             ({h2}) * (SUM(view_count)/COUNT(*) ) +
             ({h3}) * (SUM(score)/COUNT(*) ) +
             ({h4}) * (SUM(IFNULL(favorite_count,0))/COUNT(*) ) +
-            ({h5}) * (COUNT(DISTINCT accepted_answer_id)/COUNT(*) ) ) as eScore,
+            ({h5}) * (COUNT(DISTINCT accepted_answer_id)/COUNT(*) ) + {h6} ) as eScore,
             
             from `bigquery-public-data.stackoverflow.posts_questions`
             where post_type_id=1 and
