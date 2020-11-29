@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import Chart from 'chart.js';
-import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 
 
@@ -23,6 +22,7 @@ export class PredictionTrendComponent implements OnInit {
   private responseData: String;
   private labels: string[];
   private data: {};
+  private lineChart: any;
 
   constructor(
     private http: HttpClient
@@ -32,39 +32,39 @@ export class PredictionTrendComponent implements OnInit {
 
   getSelectedValue() {
     const tags = []
+
     this.selected.forEach(val => {
       tags.push(val.name);
     })
 
-
-    const params = {
-      tags: tags
-    }
-
-    const response = this.http.get<string>(`${environment.apiUrl}/prediction`, {params: params});
-    const tagsForTest = ['posts', 'posts_x', 'posts_y']
+    const response = this.http.get<string>(`http://localhost:5000/future-trends?name=` + tags);
 
     response.toPromise().then(value => {
+      this.lineChart = undefined
       this.responseData = value
       this.labels = Object.keys(this.responseData)
+
+      let dateLabel = []
+
+      this.labels.forEach(label => {
+        dateLabel.push(new Date(+label))
+      });
+
+
       this.data = {}
-      tagsForTest.forEach(tag => {
+      tags.forEach(tag => {
         this.data[tag] = []
       })
 
       this.labels.forEach(key => {
-        tagsForTest.forEach(tag => {
+        tags.forEach(tag => {
           this.data[tag].push(this.responseData[key][tag])
         })
       })
 
       let chartData = []
 
-      // tagsForTest.forEach(tag => {
-      //   chartData[tag] = []
-      // })
-
-      tagsForTest.forEach(tag => {
+      tags.forEach(tag => {
         const color = dynamicColors();
         chartData.push({
           label: tag,
@@ -72,10 +72,7 @@ export class PredictionTrendComponent implements OnInit {
           fill: false,
           borderColor: color,
           backgroundColor: 'transparent',
-          pointBorderColor: color,
-          pointRadius: 4,
-          pointHoverRadius: 4,
-          pointBorderWidth: 8,
+          pointRadius: 0
         })
       })
 
@@ -84,19 +81,27 @@ export class PredictionTrendComponent implements OnInit {
       const speedCanvas = document.getElementById('speedChart');
 
       const speedData = {
-        labels: this.labels,
+        labels: dateLabel,
         datasets: chartData
       };
       const chartOptions = {
         legend: {
           display: true,
           position: 'bottom'
+        },
+        scales: {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: 'year'
+            }
+          }]
         }
       };
 
-      const lineChart = new Chart(speedCanvas, {
+      this.lineChart = new Chart(speedCanvas, {
         type: 'line',
-        hover: false,
+        hover: true,
         data: speedData,
         options: chartOptions
       });
@@ -104,7 +109,7 @@ export class PredictionTrendComponent implements OnInit {
   }
 
   ngOnInit() {
-    const response = this.http.get<string[]>(`${environment.apiUrl}/tags`);
+    const response = this.http.get<string[]>(`http://localhost:5000/tags`);
     response.toPromise().then(value => {
       this.categories = []
       value.forEach(value1 => {
