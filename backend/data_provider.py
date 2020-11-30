@@ -86,6 +86,7 @@ class DataProvider(object):
         """
 
         reputation = self.stackoverflow.query_to_pandas(query)
+        reputation = reputation.fillna(0.0)             ############
         reputation = del_order_mark(reputation)
         ############# set index to label name #### VJ
         reputation = reputation.set_index('Reputation')
@@ -120,6 +121,7 @@ class DataProvider(object):
         order by Reputation
         """
         reputation = self.stackoverflow.query_to_pandas(query)
+        reputation = reputation.fillna(0.0)         ###############
         reputation = del_order_mark(reputation)
         ############# set index to label name #### VJ
         reputation = reputation.set_index('Reputation')
@@ -156,6 +158,7 @@ class DataProvider(object):
           Year;
                 """
         answer_rate = self.stackoverflow.query_to_pandas(query)
+        answer_rate = answer_rate.fillna(0.0)
         answer_rate = answer_rate.set_index('Year')
 
         return answer_rate
