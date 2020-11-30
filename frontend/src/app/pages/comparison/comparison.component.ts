@@ -17,6 +17,7 @@ export class ComparisonComponent implements OnInit {
   public chartColor;
   public chartEmail;
   public chartHours;
+  public chartReputationA;
   categories: any;
   selected: any;
 
@@ -41,6 +42,12 @@ export class ComparisonComponent implements OnInit {
     console.log(this.selected);
     const response = this.http.get<string>(`${environment.apiUrl}/comparison`, {params: params});
 
+//////////////////// Vaish trial
+    
+
+    
+
+
     response.toPromise().then(value => {
       this.chartColor = '#FFFFFF';
       const data = [];
@@ -49,7 +56,7 @@ export class ComparisonComponent implements OnInit {
       Object.keys(value[currentYear]).forEach(tag => {
         data.push(value[currentYear][tag])
       })
-
+//// Create chart code : 
       this.canvas = document.getElementById('chartEmail');
       this.ctx = this.canvas.getContext('2d');
       this.chartEmail = new Chart(this.ctx, {

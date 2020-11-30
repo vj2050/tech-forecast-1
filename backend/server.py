@@ -25,7 +25,9 @@ def tags():
 
 @app.route('/current-trends', methods=['POST', 'GET'])
 def current_trends():
-    tag = "java"
+    #tag = "java"
+    tag = request.args.get("name")
+    print("tag", tag)
     trend = data_provider.escore_data_for_tag(tag)
     trend['cdate'] = pd.to_datetime(trend['cdate'])
     trend.set_index('cdate', inplace=True)
@@ -36,28 +38,33 @@ def current_trends():
 
 @app.route('/current-trends/rep/answered', methods=['POST', 'GET'])
 def userRepForAnswered():
-    tag = "java"
+    #tag = "java"
+    tag = request.args.get("name")
     reputation = data_provider.user_reputation_answered(tag)
     return reputation.to_json(orient='index')
 
 
 @app.route('/current-trends/rep/unanswered', methods=['POST', 'GET'])
 def userRepForUnAnswered():
-    tag = "java"
+    #tag = "java"
+    tag = request.args.get("name")
     reputation = data_provider.user_reputation_unanswered(tag)
     return reputation.to_json(orient='index')
 
 
 @app.route('/current-trends/ques/top', methods=['POST', 'GET'])
 def topQuestions():
-    tag = "java"
+    #tag = "java"
+    tag = request.args.get("name")
+    
     questions = data_provider.top_viewed_questions(tag, 10)
     return questions.to_json(orient='index')
 
 
 @app.route('/current-trends/ques/answered', methods=['POST', 'GET'])
 def answeredQuestions():
-    tag = "java"
+    #tag = "java"
+    tag = request.args.get("name")
     questions = data_provider.answered_questions(tag)
     return questions.to_json(orient='index')
 
@@ -65,6 +72,7 @@ def answeredQuestions():
 @app.route('/future-trends', methods=['POST', 'GET'])
 def future_trends():
     tags = request.args.get("name").split(',')
+    print("future tag", tags)
     final = pd.DataFrame()
     for tag in tags:
         print(tag)

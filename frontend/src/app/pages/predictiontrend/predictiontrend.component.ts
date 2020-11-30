@@ -16,6 +16,7 @@ export class PredictionTrendComponent implements OnInit {
   public chartColor;
   public chartEmail;
   public chartHours;
+  public chartReputationA;
   private sidebarVisible: boolean;
   categories: any;
   selected: any;

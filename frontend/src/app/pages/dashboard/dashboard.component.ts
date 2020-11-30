@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   public chartColor;
   public chartEmail;
   public chartHours;
+  public chartReputationA;
 
     ngOnInit() {
     }

@@ -38,7 +38,7 @@ class DataProvider(object):
             from `bigquery-public-data.stackoverflow.posts_questions`
             where post_type_id=1 and
             extract(year from creation_date) >= 2012 
-            and extract(year from creation_date) < 2020 
+            and extract(year from creation_date) <= 2020 
             and tags LIKE '%|{tag_name}|%'
             group by cdate
             order by cdate

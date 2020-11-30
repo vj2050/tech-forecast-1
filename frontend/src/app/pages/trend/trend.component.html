@@ -17,10 +17,21 @@
       >
       </ng-select>
       <div class="input-group-append" (click)="getSelectedValue()">
+
         <div class="input-group-text">
           <i class="nc-icon nc-zoom-split" ></i>
         </div>
       </div>
+
+      <!--FOR PIE CHART REPUTATION  by VJ trial -->
+      <!--<div class="input-group-append" (click)="getReputation_answered()">
+        <div class="input-group-text">
+          <i class="nc-icon nc-zoom-split" ></i>
+        </div>
+      </div>
+    -->
+
+
     </div>
   </form>
 </div>
@@ -42,4 +53,49 @@
       </div>
     </div>
   </div>
+
+  <!--VJ trial Pie chart-->
+
+  <div class="row">
+    <div class="col-sm-5 mx-auto">
+      <div class="card ">
+        <div class="card-header ">
+          <h5 class="card-title">Reputation of Users making comments to Answered Questions</h5>
+          <p class="card-category">Go for the best fit!</p>
+        </div>
+        <div class="card-body ">
+          <canvas id="chartReputationA"></canvas>
+        </div>
+        <div class="card-footer ">
+
+          <div class="stats">
+            <i class="fa fa-check"></i> Top recommended Technology Stack
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-5 mx-auto">
+      <div class="card ">
+        <div class="card-header ">
+          <h5 class="card-title">Reputation of Users making comments to Unanswered Questions</h5>
+          <p class="card-category">Go for the best fit!</p>
+        </div>
+        <div class="card-body ">
+          <canvas id="chartReputationU"></canvas>
+        </div>
+        <div class="card-footer ">
+
+          <div class="stats">
+            <i class="fa fa-check"></i> Top recommended Technology Stack
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    
+  </div>
+
 </div>
