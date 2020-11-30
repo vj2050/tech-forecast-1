@@ -32,24 +32,24 @@ export class TrendComponent implements OnInit {
   }
 
   getSelectedValue() {
-    //var tag1 = ""
+    // var tag1 = ""
 
-    //tag = this.selected.name
-    //const params = {
+    // tag = this.selected.name
+    // const params = {
     //  tags: this.selected.name
-    //}
+    // }
 
     /*Fix for JSON*/
     const a = 'eScore'
-    var tag1 = this.selected.name
-    console.log("tag", tag1)
+    const tag1 = this.selected.name
+    console.log('tag', tag1)
     const response = this.http.get<string>(`http://localhost:5000/current-trends?name=` + tag1);
-    
+
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
 
-      let dateLabel = []
+      const dateLabel = []
       this.labels.forEach(label => {
         dateLabel.push(new Date(+label))
       });
@@ -70,7 +70,7 @@ export class TrendComponent implements OnInit {
         data: {
           labels: dateLabel,
           datasets: [{
-            label: a,
+            label: 'Effective Score',
             borderColor: '#5aad58',
             backgroundColor: '#5aad58',
             pointRadius: 0,
@@ -119,12 +119,12 @@ export class TrendComponent implements OnInit {
             time: {
               unit: 'year'
             },
-              scaleLabel:{
-                display:true,
+              scaleLabel: {
+                display: true,
                 labelString: 'Year',
                 fontSize : 20,
               },
-              
+
               barPercentage: 1.6,
               gridLines: {
                 drawBorder: false,
@@ -135,7 +135,7 @@ export class TrendComponent implements OnInit {
               ticks: {
                 padding: 10,
                 fontColor: '#9f9f9f'
-                
+
               }
             }]
           },
@@ -147,13 +147,13 @@ export class TrendComponent implements OnInit {
     this.getReputation_unanswered();
   }
 
-  getReputation_answered(){
+  getReputation_answered() {
     // const params = {
     //   tags: this.selected.name
     // }
-    var tag2 = this.selected.name
-    const b = "num"
-    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/answered?name=`+tag2);
+    const tag2 = this.selected.name
+    const b = 'num'
+    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/answered?name=` + tag2);
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
@@ -183,7 +183,7 @@ export class TrendComponent implements OnInit {
               dynamicColors()
             ],
             borderWidth: 0,
-            data: this.data                                     // VJ 
+            data: this.data                                     // VJ
           }]
         },
 
@@ -236,13 +236,13 @@ export class TrendComponent implements OnInit {
     });
   }
 
-  getReputation_unanswered(){
+  getReputation_unanswered() {
     // const params = {
     //   tags: this.selected.name
     // }
-    const c = "num"
-    var tag3 = this.selected.name
-    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/unanswered?name=`+tag3);
+    const c = 'num'
+    const tag3 = this.selected.name
+    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/unanswered?name=` + tag3);
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
@@ -271,7 +271,7 @@ export class TrendComponent implements OnInit {
               dynamicColors()
             ],
             borderWidth: 0,
-            data: this.data                                     // VJ 
+            data: this.data                                     // VJ
           }]
         },
 
