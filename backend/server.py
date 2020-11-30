@@ -102,7 +102,7 @@ def compare_trends():
             final = trend
         else:
             final = pd.concat([final, trend], axis=1, sort=False)
-
+    final = final.fillna(0.0)
     curr_trendsjson = final.to_json(orient="index")
 
     return curr_trendsjson
