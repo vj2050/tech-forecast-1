@@ -87,6 +87,8 @@ class DataProvider(object):
 
         reputation = self.stackoverflow.query_to_pandas(query)
         reputation = del_order_mark(reputation)
+        ############# set index to label name #### VJ
+        reputation = reputation.set_index('Reputation')
         return reputation
 
     def user_reputation_unanswered(self, tag_name):
@@ -119,6 +121,8 @@ class DataProvider(object):
         """
         reputation = self.stackoverflow.query_to_pandas(query)
         reputation = del_order_mark(reputation)
+        ############# set index to label name #### VJ
+        reputation = reputation.set_index('Reputation')
 
         return reputation
 
