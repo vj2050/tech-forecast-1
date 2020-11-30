@@ -34,18 +34,13 @@ export class ComparisonComponent implements OnInit {
       tags.push(val.name);
     })
 
-
-    const params = {
-      tags: tags
-    }
-
     console.log(this.selected);
-    const response = this.http.get<string>(`${environment.apiUrl}/comparison`, {params: params});
+    const response = this.http.get<string>(`http://localhost:5000/comparison?name=` + tags );
 
 //////////////////// Vaish trial
-    
 
-    
+
+
 
 
     response.toPromise().then(value => {
@@ -56,7 +51,7 @@ export class ComparisonComponent implements OnInit {
       Object.keys(value[currentYear]).forEach(tag => {
         data.push(value[currentYear][tag])
       })
-//// Create chart code : 
+//// Create chart code :
       this.canvas = document.getElementById('chartEmail');
       this.ctx = this.canvas.getContext('2d');
       this.chartEmail = new Chart(this.ctx, {
