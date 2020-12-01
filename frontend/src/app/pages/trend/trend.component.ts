@@ -92,10 +92,11 @@ export class TrendComponent implements OnInit {
           scales: {
             yAxes: [{
               display : true,
-              // scaleLabel:{
-              //   display:true,
-              //   labelString: 'Posts',
-              // },
+              scaleLabel:{
+                display:true,
+                labelString: 'Effective Score',
+                fontSize : 15,
+              },
 
               ticks: {
                 fontColor: '#9f9f9f',

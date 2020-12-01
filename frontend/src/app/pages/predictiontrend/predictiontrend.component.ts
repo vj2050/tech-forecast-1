@@ -97,9 +97,24 @@ export class PredictionTrendComponent implements OnInit {
             type: 'time',
             time: {
               unit: 'year'
-            }
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Year',
+              fontSize : 20,
+            },
+          }],
+
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Effective Score',
+              fontSize : 15,
+            },
           }]
         }
+
       };
 
       this.lineChart = new Chart(speedCanvas, {
