@@ -39,7 +39,7 @@ export class PredictionTrendComponent implements OnInit {
     })
 
     const response = this.http.get<string>(`http://localhost:5000/future-trends?name=` + tags);
-
+    
     response.toPromise().then(value => {
       this.lineChart = undefined
       this.responseData = value
@@ -50,8 +50,7 @@ export class PredictionTrendComponent implements OnInit {
       this.labels.forEach(label => {
         dateLabel.push(new Date(+label))
       });
-
-
+     
       this.data = {}
       tags.forEach(tag => {
         this.data[tag] = []
@@ -95,9 +94,24 @@ export class PredictionTrendComponent implements OnInit {
             type: 'time',
             time: {
               unit: 'year'
-            }
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Year',
+              fontSize : 20,
+            },
+          }],
+
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Effective Score',
+              fontSize : 15,
+            },
           }]
         }
+        
       };
 
       this.lineChart = new Chart(speedCanvas, {

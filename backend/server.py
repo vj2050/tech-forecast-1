@@ -89,9 +89,11 @@ def future_trends():
 
 @app.route('/comparison', methods=['GET', 'POST'])
 def compare_trends():
+    #tags = encodeURIComponent(request.args.get("name").split(','))
     # TODO: Make calls for multiple keywords for comparison
     tags = request.args.get("name").split(',')
-    print("comparison tag", tags)
+    #tags = decodeURIComponent(tags)
+    print("DECODED comparison tag", tags)
     final = pd.DataFrame()
     for tag in tags:
         trend = data_provider.escore_data_for_tag(tag)
