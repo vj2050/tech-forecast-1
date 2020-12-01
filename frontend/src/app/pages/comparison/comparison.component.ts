@@ -37,9 +37,9 @@ export class ComparisonComponent implements OnInit {
       tags.push(val.name);
     })
 
-    console.log(this.selected);
-    const response = this.http.get<string>(`http://localhost:5000/comparison?name=` + tags );
-    //console.log(response)
+    console.log("selected tag", this.selected);
+    const response = this.http.get<string>(`http://localhost:5000/comparison?name=` + tags);
+    
 //////////////////// Vaish trial
 
     response.toPromise().then(value => {
@@ -78,6 +78,18 @@ export class ComparisonComponent implements OnInit {
       for (const i of Object.keys(this.data2020)){
         li.push(this.data2020[i])
       }
+      let summ = 0
+      var percent = []
+      for (const j of li){
+        summ = summ + j
+      }
+
+      for (const p of li){
+        let per  = ((p / summ) * 100)
+        percent.push(per)
+      }
+      console.log("summmmmm ", summ)
+      console.log("percent ", percent)
       console.log("listttttttt", li)
       
 //// Create chart code :
@@ -85,9 +97,9 @@ export class ComparisonComponent implements OnInit {
       this.ctx = document.getElementById('chartComparison');
       //this.ctx = this.canvas.getContext('2d');
       this.chartComparison = new Chart(this.ctx, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
-          labels: Object.keys(this.data2020),                       //Object.keys(value[currentYear]),
+          labels: Object.keys(this.data2020),                       
           datasets: [{
             label: 'Comparative Analysis',
             pointRadius: 0,
@@ -99,22 +111,24 @@ export class ComparisonComponent implements OnInit {
               dynamicColors()
             ],
             borderWidth: 0,
-            data: li
+            data: percent
           }]
         },
 
         options: {
-
           legend: {
             display: true,
             position: 'bottom'
           },
 
-          pieceLabel: {
-            render: 'percentage',
-            fontColor: ['white'],
-            precision: 2
-          },
+          // pieceLabel: {
+          //   display:true,
+          //   render: 'percentage',
+          //   precision: 4,
+          //   fontColor: '#000',
+          //   position: 'outside',
+          //   segment: true
+          // },
 
           tooltips: {
             enabled: false
@@ -145,6 +159,17 @@ export class ComparisonComponent implements OnInit {
                 display: false,
               }
             }]
+          },
+          plugins: {
+            labels: {
+              render: function(d) { return percent + "%" },
+               precision: 4,
+                fontColor: '#000',
+                position: 'outside',
+                segment: true,
+                  
+              
+            }
           },
         }
       });
