@@ -15,11 +15,14 @@ export class ComparisonComponent implements OnInit {
   public canvas: any;
   public ctx;
   public chartColor;
-  public chartEmail;
+  public chartComparison;
   public chartHours;
   public chartReputationA;
   categories: any;
   selected: any;
+  private labels: string[];
+  private responseData: String;
+  private data2020: {};
 
   private sidebarVisible: boolean;
 
@@ -36,30 +39,57 @@ export class ComparisonComponent implements OnInit {
 
     console.log(this.selected);
     const response = this.http.get<string>(`http://localhost:5000/comparison?name=` + tags );
-
+    //console.log(response)
 //////////////////// Vaish trial
 
-
-
-
-
     response.toPromise().then(value => {
-      this.chartColor = '#FFFFFF';
+      
+      this.responseData = value
+      this.labels = Object.keys(this.responseData)
       const data = [];
 
-      const currentYear = '2020';
-      Object.keys(value[currentYear]).forEach(tag => {
-        data.push(value[currentYear][tag])
+      const currentYear = 2020;
+
+      let dateLabel = []
+      this.labels.forEach(label => {
+        var a = (new Date(+label))
+        var b = a.getFullYear()
+        //console.log("b    ", b)
+        if (b === currentYear){
+          dateLabel.push(label)
+        }
+        
+      });
+      console.log("datELABEL ", dateLabel)
+      
+      this.data2020 = {}
+      tags.forEach(tag => {
+        this.data2020[tag] = 0
       })
+
+      dateLabel.forEach(key =>{
+        tags.forEach(tag => {
+          this.data2020[tag] = this.data2020[tag] + this.responseData[key][tag]
+        })
+      })
+      console.log("data2020  " , this.data2020)
+      
+      var li = []
+      for (const i of Object.keys(this.data2020)){
+        li.push(this.data2020[i])
+      }
+      console.log("listttttttt", li)
+      
 //// Create chart code :
-      this.canvas = document.getElementById('chartEmail');
-      this.ctx = this.canvas.getContext('2d');
-      this.chartEmail = new Chart(this.ctx, {
+      this.chartColor = '#FFFFFF';
+      this.ctx = document.getElementById('chartComparison');
+      //this.ctx = this.canvas.getContext('2d');
+      this.chartComparison = new Chart(this.ctx, {
         type: 'pie',
         data: {
-          labels: Object.keys(value[currentYear]),
+          labels: Object.keys(this.data2020),                       //Object.keys(value[currentYear]),
           datasets: [{
-            label: 'Emails',
+            label: 'Comparative Analysis',
             pointRadius: 0,
             pointHoverRadius: 0,
             backgroundColor: [
@@ -69,7 +99,7 @@ export class ComparisonComponent implements OnInit {
               dynamicColors()
             ],
             borderWidth: 0,
-            data: data
+            data: li
           }]
         },
 
