@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import Chart from 'chart.js';
-import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
@@ -43,7 +42,7 @@ export class TrendComponent implements OnInit {
     const a = 'eScore'
     const tag1 = this.selected.name
     console.log('tag', tag1)
-    const response = this.http.get<string>(`http://localhost:5000/current-trends?name=` + tag1);
+    const response = this.http.get<string>(`http://localhost:5000/current-trends?name=` + encodeURIComponent(tag1));
 
     response.toPromise().then(value => {
       this.responseData = value
@@ -116,9 +115,9 @@ export class TrendComponent implements OnInit {
               display : true,
               fontSize: 100,
               type: 'time',
-            time: {
-              unit: 'year'
-            },
+              time: {
+                unit: 'year'
+              },
               scaleLabel: {
                 display: true,
                 labelString: 'Year',
@@ -153,7 +152,7 @@ export class TrendComponent implements OnInit {
     // }
     const tag2 = this.selected.name
     const b = 'num'
-    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/answered?name=` + tag2);
+    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/answered?name=` + encodeURIComponent(tag2));
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)
@@ -242,7 +241,7 @@ export class TrendComponent implements OnInit {
     // }
     const c = 'num'
     const tag3 = this.selected.name
-    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/unanswered?name=` + tag3);
+    const response = this.http.get<string>(`http://localhost:5000/current-trends/rep/unanswered?name=` + encodeURIComponent(tag3));
     response.toPromise().then(value => {
       this.responseData = value
       this.labels = Object.keys(this.responseData)

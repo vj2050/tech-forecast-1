@@ -33,12 +33,14 @@ export class PredictionTrendComponent implements OnInit {
 
   getSelectedValue() {
     const tags = []
+    const encodedTags = []
 
     this.selected.forEach(val => {
       tags.push(val.name);
+      encodedTags.push(encodeURIComponent(val.name));
     })
 
-    const response = this.http.get<string>(`http://localhost:5000/future-trends?name=` + tags);
+    const response = this.http.get<string>(`http://localhost:5000/future-trends?name=` + encodedTags);
 
     response.toPromise().then(value => {
       this.lineChart = undefined
