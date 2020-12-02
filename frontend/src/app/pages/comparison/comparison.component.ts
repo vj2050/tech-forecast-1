@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import * as Chart from 'chart.js';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+//import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'app-comparison-cmp',
@@ -116,7 +116,7 @@ export class ComparisonComponent implements OnInit {
             data: percent
           }]
         },
-        plugins: [ChartDataLabels],
+      
         options: {
 
           legend: {
@@ -150,13 +150,6 @@ export class ComparisonComponent implements OnInit {
               }
 
             }],
-          },
-          plugins: {
-            datalabels: {
-              formatter: function (value, context) {
-                return Math.round(value) + '%'
-              }
-            }
           },
         }
       });
