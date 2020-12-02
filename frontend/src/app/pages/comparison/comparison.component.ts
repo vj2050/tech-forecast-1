@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import Chart from 'chart.js';
+import * as Chart from 'chart.js';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'app-comparison-cmp',
@@ -39,7 +39,7 @@ export class ComparisonComponent implements OnInit {
       encodedTags.push(encodeURIComponent(val.name));
     })
 
-    console.log("selected tag", this.selected);
+    console.log('selected tag', this.selected);
     const response = this.http.get<string>(`http://localhost:5000/comparison?name=` + encodedTags);
 
 //////////////////// Vaish trial
@@ -52,52 +52,52 @@ export class ComparisonComponent implements OnInit {
 
       const currentYear = 2020;
 
-      let dateLabel = []
+      const dateLabel = []
       this.labels.forEach(label => {
-        var a = (new Date(+label))
-        var b = a.getFullYear()
-        //console.log("b    ", b)
-        if (b === currentYear){
+        const a = (new Date(+label))
+        const b = a.getFullYear()
+        // console.log("b    ", b)
+        if (b === currentYear) {
           dateLabel.push(label)
         }
 
       });
-      console.log("datELABEL ", dateLabel)
+      console.log('datELABEL ', dateLabel)
 
       this.data2020 = {}
       tags.forEach(tag => {
         this.data2020[tag] = 0
       })
 
-      dateLabel.forEach(key =>{
+      dateLabel.forEach(key => {
         tags.forEach(tag => {
           this.data2020[tag] = this.data2020[tag] + this.responseData[key][tag]
         })
       })
-      console.log("data2020  " , this.data2020)
+      console.log('data2020  ' , this.data2020)
 
-      var li = []
-      for (const i of Object.keys(this.data2020)){
+      const li = []
+      for (const i of Object.keys(this.data2020)) {
         li.push(this.data2020[i])
       }
       let summ = 0
-      var percent = []
-      for (const j of li){
+      const percent = []
+      for (const j of li) {
         summ = summ + j
       }
 
-      for (const p of li){
-        let per  = ((p / summ) * 100)
+      for (const p of li) {
+        const per  = ((p / summ) * 100)
         percent.push(per)
       }
-      console.log("summmmmm ", summ)
-      console.log("percent ", percent)
-      console.log("listttttttt", li)
+      console.log('summmmmm ', summ)
+      console.log('percent ', percent)
+      console.log('listttttttt', li)
 
 //// Create chart code :
       this.chartColor = '#FFFFFF';
       this.ctx = document.getElementById('chartComparison');
-      //this.ctx = this.canvas.getContext('2d');
+      // this.ctx = this.canvas.getContext('2d');
       this.chartComparison = new Chart(this.ctx, {
         type: 'doughnut',
         data: {
@@ -116,7 +116,7 @@ export class ComparisonComponent implements OnInit {
             data: percent
           }]
         },
-
+        plugins: [ChartDataLabels],
         options: {
 
           legend: {
@@ -150,28 +150,12 @@ export class ComparisonComponent implements OnInit {
               }
 
             }],
-
-            xAxes: [{
-              barPercentage: 1.6,
-              gridLines: {
-                drawBorder: false,
-                color: 'rgba(255,255,255,0.1)',
-                zeroLineColor: 'transparent'
-              },
-              ticks: {
-                display: false,
-              }
-            }]
           },
           plugins: {
-            labels: {
-              render: function(d) { return percent + "%" },
-               precision: 4,
-                fontColor: '#000',
-                position: 'outside',
-                segment: true,
-
-
+            datalabels: {
+              formatter: function (value, context) {
+                return Math.round(value) + '%'
+              }
             }
           },
         }
