@@ -106,6 +106,12 @@ def compare_trends():
 
     return curr_trendsjson
 
+@app.route('/taginfo', methods=['GET', 'POST'])
+def getTagInfo():
+    tag = unquote(request.args.get("name"))
+    data = data_provider.get_tag_info(tag)
+    return json.dumps(data['body'][0])
+
 
 if __name__ == "__main__":
     app.run(debug=True)
