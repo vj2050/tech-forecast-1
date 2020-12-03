@@ -83,7 +83,7 @@ def future_trends():
             final = forecast
         else:
             final = pd.concat([final, forecast], axis=1, sort=False)
-    return final.to_json(orient="index")
+    return final[:len(final)-2].to_json(orient="index")
 
 
 @app.route('/comparison', methods=['GET', 'POST'])
