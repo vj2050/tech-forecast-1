@@ -94,14 +94,19 @@ def compare_trends():
     final = pd.DataFrame()
     for tag in tags:
         trend = data_provider.escore_data_for_tag(tag)
+        trend['cdate'] = pd.to_datetime(trend['cdate'])
+        
+        
         trend.rename({"eScore": tag}, axis='columns', inplace=True)
         trend.set_index('cdate', inplace=True)
-
+        trend = trend.resample('MS').sum()
+        
         if final.empty:
             final = trend
         else:
             final = pd.concat([final, trend], axis=1, sort=False)
     final = final.fillna(0.0)
+    print(final.head(1))
     curr_trendsjson = final.to_json(orient="index")
 
     return curr_trendsjson
