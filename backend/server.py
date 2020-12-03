@@ -32,7 +32,7 @@ def current_trends():
     trend['cdate'] = pd.to_datetime(trend['cdate'])
     trend.set_index('cdate', inplace=True)
     trend = trend.resample('MS').sum()
-    curr_trendsjson = trend.to_json(orient="index")
+    curr_trendsjson = trend[:len(trend) - 2].to_json(orient="index")
     return curr_trendsjson
 
 
@@ -107,7 +107,7 @@ def compare_trends():
             final = pd.concat([final, trend], axis=1, sort=False)
     final = final.fillna(0.0)
     print(final.head(1))
-    curr_trendsjson = final.to_json(orient="index")
+    curr_trendsjson = final[:len(final) - 2].to_json(orient="index")
 
     return curr_trendsjson
 
