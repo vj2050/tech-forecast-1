@@ -35,7 +35,7 @@
       </div>
     </form>
   </div>
-  <div [hidden]="selected"  class="row justify-content-md-center m-5" >
+  <div [hidden]="selected" class="row justify-content-md-center m-5">
     <h2>Start by selecting a tag(technology) from the dropdown and then click on the search icon!</h2>
   </div>
   <div [hidden]="!isLoaded[0]" *ngIf="tagInfo" class="row">
@@ -61,7 +61,7 @@
       <div class="card ">
         <div class="card-header ">
           <h5 class="card-title">Current Trends</h5>
-          <p class="card-category">Stack Community Support</p>
+          <p class="card-category">Popularity index based in effective score</p>
         </div>
         <div class="card-body ">
           <canvas id=chartHours width="400" height="100"></canvas>
@@ -76,35 +76,24 @@
     <div [hidden]="!isLoaded[2]" class="col-6 mx-auto">
       <div class="card ">
         <div class="card-header ">
-          <h5 class="card-title">Reputation of Users making comments to Answered Questions</h5>
-          <p class="card-category">Go for the best fit!</p>
+          <h5 class="card-title">Quality of users involved in case Answered Questions</h5>
+          <p class="card-category">Based on user reputation on StackOverFlow</p>
         </div>
         <div class="card-body ">
           <canvas id="chartReputationA"></canvas>
-        </div>
-        <div class="card-footer ">
-
-          <div class="stats">
-            <i class="fa fa-check"></i> Top recommended Technology Stack
-          </div>
         </div>
       </div>
     </div>
     <div [hidden]="!isLoaded[3]" class="col-6 mx-auto">
       <div class="card ">
         <div class="card-header ">
-          <h5 class="card-title">Reputation of Users making comments to Unanswered Questions</h5>
-          <p class="card-category">Go for the best fit!</p>
+          <h5 class="card-title">Quality of users involved in case of Unanswered Questions</h5>
+          <p class="card-category">Based on user reputation on StackOverFlow</p>
         </div>
         <div class="card-body ">
           <canvas id="chartReputationU"></canvas>
         </div>
-        <div class="card-footer ">
 
-          <div class="stats">
-            <i class="fa fa-check"></i> Top recommended Technology Stack
-          </div>
-        </div>
       </div>
     </div>
   </div>
