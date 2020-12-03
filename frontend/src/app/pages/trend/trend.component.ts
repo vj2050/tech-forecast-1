@@ -24,6 +24,8 @@ export class TrendComponent implements OnInit {
   private data: number[];
   categories: any;
   selected: any;
+  tagInfo: string[];
+  isLoaded: boolean[];
 
   constructor(
     private http: HttpClient
@@ -38,7 +40,37 @@ export class TrendComponent implements OnInit {
     //  tags: this.selected.name
     // }
 
+    this.isLoaded = [false, false, false, false]
     /*Fix for JSON*/
+    this.responseData = undefined
+    this.labels = undefined
+    this.data = undefined
+    this.tagInfo = undefined
+    this.canvas = undefined
+    this.ctx = undefined
+    this.chartColor = undefined
+    this.chartHours = undefined
+    this.chartReputationA = undefined
+    this.chartReputationU = undefined
+
+    this.getTagInfo()
+    this.getEScoreData();
+    this.getReputation_answered();
+    this.getReputation_unanswered();
+  }
+
+  getTagInfo() {
+    const tag1 = this.selected.name
+    console.log('tag', tag1)
+    const response = this.http.get<string>(`http://localhost:5000/taginfo?name=` + encodeURIComponent(tag1));
+
+    response.toPromise().then(value => {
+      this.tagInfo = [value]
+      this.isLoaded[0] = true
+    })
+  }
+
+  getEScoreData() {
     const a = 'eScore'
     const tag1 = this.selected.name
     console.log('tag', tag1)
@@ -91,11 +123,11 @@ export class TrendComponent implements OnInit {
 
           scales: {
             yAxes: [{
-              display : true,
-              scaleLabel:{
-                display:true,
+              display: true,
+              scaleLabel: {
+                display: true,
                 labelString: 'Effective Score',
-                fontSize : 15,
+                fontSize: 15,
               },
 
               ticks: {
@@ -113,7 +145,7 @@ export class TrendComponent implements OnInit {
             }],
 
             xAxes: [{
-              display : true,
+              display: true,
               fontSize: 100,
               type: 'time',
               time: {
@@ -122,7 +154,7 @@ export class TrendComponent implements OnInit {
               scaleLabel: {
                 display: true,
                 labelString: 'Year',
-                fontSize : 20,
+                fontSize: 20,
               },
 
               barPercentage: 1.6,
@@ -141,10 +173,9 @@ export class TrendComponent implements OnInit {
           },
         }
       });
+      this.isLoaded[1] = true
 
     });
-    this.getReputation_answered();
-    this.getReputation_unanswered();
   }
 
   getReputation_answered() {
@@ -232,6 +263,7 @@ export class TrendComponent implements OnInit {
           },
         }
       });
+      this.isLoaded[2] = true
 
     });
   }
@@ -321,10 +353,13 @@ export class TrendComponent implements OnInit {
         }
       });
 
+      this.isLoaded[3] = true
+
     });
   }
 
   ngOnInit() {
+    this.isLoaded = [false, false, false, false]
     const response = this.http.get<string[]>(`http://localhost:5000/tags`);
     response.toPromise().then(value => {
       this.categories = []
