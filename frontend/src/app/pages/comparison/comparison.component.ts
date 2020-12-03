@@ -15,14 +15,15 @@ export class ComparisonComponent implements OnInit {
   public canvas: any;
   public ctx;
   public chartColor;
-  public chartComparison;
+  //public chartComparison;
   public chartHours;
   public chartReputationA;
   categories: any;
   selected: any;
   private labels: string[];
   private responseData: String;
-  private data2020: {};
+  private data: {};
+  private lineChart: any;
 
   private sidebarVisible: boolean;
 
@@ -45,114 +46,91 @@ export class ComparisonComponent implements OnInit {
 //////////////////// Vaish trial
 
     response.toPromise().then(value => {
-
+      this.lineChart = undefined
       this.responseData = value
       this.labels = Object.keys(this.responseData)
-      const data = [];
 
-      const currentYear = 2020;
+      let dateLabel = []
 
-      const dateLabel = []
       this.labels.forEach(label => {
-        const a = (new Date(+label))
-        const b = a.getFullYear()
-        // console.log("b    ", b)
-        if (b === currentYear) {
-          dateLabel.push(label)
-        }
-
+        dateLabel.push(new Date(+label))
       });
-      console.log('datELABEL ', dateLabel)
 
-      this.data2020 = {}
+
+      this.data = {}
       tags.forEach(tag => {
-        this.data2020[tag] = 0
+        this.data[tag] = []
       })
 
-      dateLabel.forEach(key => {
+      this.labels.forEach(key => {
         tags.forEach(tag => {
-          this.data2020[tag] = this.data2020[tag] + this.responseData[key][tag]
+          this.data[tag].push(this.responseData[key][tag])
         })
       })
-      console.log('data2020  ' , this.data2020)
 
-      const li = []
-      for (const i of Object.keys(this.data2020)) {
-        li.push(this.data2020[i])
-      }
-      let summ = 0
-      const percent = []
-      for (const j of li) {
-        summ = summ + j
-      }
+      let chartData = []
 
-      for (const p of li) {
-        const per  = ((p / summ) * 100)
-        percent.push(per)
-      }
-      console.log('summmmmm ', summ)
-      console.log('percent ', percent)
-      console.log('listttttttt', li)
+      tags.forEach(tag => {
+        const color = dynamicColors();
+        chartData.push({
+          label: tag,
+          data: this.data[tag],
+          fill: false,
+          borderColor: color,
+          backgroundColor: 'transparent',
+          pointRadius: 0
+        })
+      })
 
-//// Create chart code :
       this.chartColor = '#FFFFFF';
-      this.ctx = document.getElementById('chartComparison');
-      // this.ctx = this.canvas.getContext('2d');
-      this.chartComparison = new Chart(this.ctx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(this.data2020),
-          datasets: [{
-            label: 'Comparative Analysis',
-            pointRadius: 0,
-            pointHoverRadius: 0,
-            backgroundColor: [
-              dynamicColors(),
-              dynamicColors(),
-              dynamicColors(),
-              dynamicColors()
-            ],
-            borderWidth: 0,
-            data: percent
-          }]
+
+      const chartComparison = document.getElementById('chartComparison');
+
+      const chartData1 = {
+        labels: dateLabel,
+        datasets: chartData
+      };
+      const chartOptions = {
+        legend: {
+          display: true,
+          position: 'bottom'
         },
-      
-        options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: 'year'
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Year',
+              fontSize : 20,
+            },
+          }],
 
-          legend: {
+          yAxes: [{
             display: true,
-            position: 'bottom'
-          },
-
-          // pieceLabel: {
-          //   display:true,
-          //   render: 'percentage',
-          //   precision: 4,
-          //   fontColor: '#000',
-          //   position: 'outside',
-          //   segment: true
-          // },
-
-          tooltips: {
-            enabled: false
-          },
-
-          scales: {
-            yAxes: [{
-
-              ticks: {
-                display: false
-              },
-              gridLines: {
-                drawBorder: false,
-                zeroLineColor: 'transparent',
-                color: 'rgba(255,255,255,0.05)'
-              }
-
-            }],
-          },
+            scaleLabel: {
+              display: true,
+              labelString: 'Effective Score',
+              fontSize : 15,
+            },
+          }]
         }
+
+      };
+
+      this.lineChart = new Chart(chartComparison, {
+        type: 'line',
+        hover: true,
+        data: chartData1,
+        options: chartOptions
       });
+
+
+////////////////////////////////////////////////////////////////////////
+
+      
     });
   }
 
