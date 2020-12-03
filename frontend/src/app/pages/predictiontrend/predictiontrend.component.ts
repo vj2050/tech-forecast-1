@@ -24,6 +24,8 @@ export class PredictionTrendComponent implements OnInit {
   private labels: string[];
   private data: {};
   private lineChart: any;
+  isLoaded: boolean;
+  queryStarted: boolean;
 
   constructor(
     private http: HttpClient
@@ -32,6 +34,17 @@ export class PredictionTrendComponent implements OnInit {
 
 
   getSelectedValue() {
+    this.isLoaded = false
+    this.responseData = undefined
+    this.labels = undefined
+    this.data = undefined
+    this.canvas = undefined
+    this.ctx = undefined
+    this.chartColor = undefined
+    this.chartHours = undefined
+    this.chartReputationA = undefined
+    this.queryStarted = true
+
     const tags = []
     const encodedTags = []
 
@@ -123,10 +136,23 @@ export class PredictionTrendComponent implements OnInit {
         data: speedData,
         options: chartOptions
       });
+    this.isLoaded = true
+    this.queryStarted = false
     })
   }
 
   ngOnInit() {
+    this.isLoaded = false
+    this.queryStarted = false
+    this.responseData = undefined
+    this.labels = undefined
+    this.data = undefined
+    this.canvas = undefined
+    this.ctx = undefined
+    this.chartColor = undefined
+    this.chartHours = undefined
+    this.chartReputationA = undefined
+
     const response = this.http.get<string[]>(`http://localhost:5000/tags`);
     response.toPromise().then(value => {
       this.categories = []

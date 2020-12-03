@@ -41,7 +41,6 @@ export class TrendComponent implements OnInit {
     // }
 
     this.isLoaded = [false, false, false, false]
-    /*Fix for JSON*/
     this.responseData = undefined
     this.labels = undefined
     this.data = undefined

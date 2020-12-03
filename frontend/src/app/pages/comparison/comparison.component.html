@@ -28,7 +28,10 @@
       </div>
     </form>
   </div>
-  <div class="row">
+  <div [hidden]="selected" class="row justify-content-md-center m-5">
+    <h2>Start by selecting a tag(technology) from the dropdown and then click on the search icon!</h2>
+  </div>
+  <div [hidden]="!selected" class="row">
     <div class="col-sm-5 mx-auto">
       <div class="card ">
         <div class="card-header ">
