@@ -12,7 +12,7 @@
       <a class="navbar-brand" href="javascript:void(0)">{{getTitle()}}</a>
     </div>
     <button class="navbar-toggler" type="button" (click)="collapse()"
-      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+            [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
       <span class="navbar-toggler-bar navbar-kebab"></span>
       <span class="navbar-toggler-bar navbar-kebab"></span>
       <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -21,11 +21,11 @@
 
     <div class="collapse navbar-collapse justify-content-end" id="collapseExample" [ngbCollapse]="isCollapsed">
       <div>
-        <button>
+        <button *ngIf="accountService.userValue">
           <a (click)="accountService.logout()">Logout</a>
         </button>
         <span class="navbar-toggler-bar bar1"></span>
-        </div>
+      </div>
 
     </div>
   </div>
