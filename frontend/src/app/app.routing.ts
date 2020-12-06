@@ -21,8 +21,7 @@ export const AppRoutes: Routes = [
       {
         path: '',
         loadChildren: './layouts/admin-layout/admin-layout.module#AdminLayoutModule'
-      }],
-    canActivate: [AuthGuard]
+      }]
   },
   {
     path: 'account',
