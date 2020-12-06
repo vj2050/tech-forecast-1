@@ -39,7 +39,8 @@ export class RegisterComponent implements OnInit {
 
         // stop here if form is invalid
         if (this.form.invalid) {
-            return;
+            this.alertService.error('Registration Failed');
+            
         }
 
         this.loading = true;
@@ -51,6 +52,7 @@ export class RegisterComponent implements OnInit {
                     this.router.navigate(['../login'], { relativeTo: this.route });
                 },
                 error: error => {
+                    this.alertService.error('Registration Failed');
                     this.alertService.error(error);
                     this.loading = false;
                 }
